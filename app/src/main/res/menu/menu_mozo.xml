@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_picking"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_llista"
         android:title="@string/menu_picking" />
     <item
         android:id="@+id/nav_qr"
-        android:icon="@android:drawable/ic_menu_camera"
+        android:icon="@drawable/ic_camara"
         android:title="@string/menu_escaner" />
 </menu>

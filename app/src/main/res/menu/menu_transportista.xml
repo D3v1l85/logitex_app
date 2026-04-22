@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_rutas"
-        android:icon="@android:drawable/ic_menu_mapmode"
+        android:icon="@drawable/ic_camio"
         android:title="@string/menu_rutas" />
     <item
         android:id="@+id/nav_incidencias"
-        android:icon="@android:drawable/ic_menu_report_image"
+        android:icon="@drawable/ic_alerta"
         android:title="@string/menu_incidencias" />
 </menu>
