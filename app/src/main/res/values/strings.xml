@@ -4,5 +4,26 @@
         <string name="sumar">Sumar</string>
         <string name="cero">0</string>
 
+        <string name="panell_control">Panell de Control</string>
+        <string name="carregant_modul">Carregant mòdul...</string>
+        <string name="lector_qr">Lector QR / Ubicar Palet</string>
+        <string name="llista_picking">Llista de Picking</string>
+        <string name="les_meves_rutes">Les Meves Rutes i Albarans</string>
+        <string name="reportar_incidencia">Reportar Incidència</string>
+
+        <string name="header_mozo">LogiTex - Magatzem</string>
+        <string name="header_transportista">LogiTex - Transport</string>
+        <string name="cargando_modulos">Carregant mòdul...</string>
+        <string name="msg_picking">Pantalla de Picking (Llista de palets a recollir)</string>
+        <string name="msg_escaner">Càmera oberta: Escanejant codi de barres/QR...</string>
+        <string name="msg_rutas">Pantalla de Rutes (Estat de les entregues)</string>
+        <string name="msg_incidencias">Formulari d\'Incidències (Retard, accident, etc.)</string>
+        <string name="error_rol">Error de rol al sistema</string>
+
+        <string name="menu_picking">Picking</string>
+        <string name="menu_escaner">Escàner</string>
+        <string name="menu_rutas">Rutes</string>
+        <string name="menu_incidencias">Incidències</string>
+
         <!-- <string name="app_name">Clicks_Bagner_Carrion</string> -->
 </resources>
