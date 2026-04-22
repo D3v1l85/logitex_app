@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Logitex_app</string>
+        <string name="li_has_donat">Li has donat</string>
+        <string name="sumar">Sumar</string>
+        <string name="cero">0</string>
+
+        <!-- <string name="app_name">Clicks_Bagner_Carrion</string> -->
+</resources>
