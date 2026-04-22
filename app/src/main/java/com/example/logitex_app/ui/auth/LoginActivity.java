@@ -30,19 +30,22 @@ public class LoginActivity extends AppCompatActivity {
             if (user.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(this, "Omple tots els camps", Toast.LENGTH_SHORT).show();
             } else {
-                // Lògica provisional de rols segons el document de viabilitat
-                String role = "";
-                if (user.equalsIgnoreCase("mosso")) {
-                    role = "MOZO"; // Rol per a Picking/Ubicació [cite: 161]
-                } else if (user.equalsIgnoreCase("xofer")) {
-                    role = "TRANSPORTISTA"; // Rol per a Rutes [cite: 162]
+                // Verificació manual per a usuaris de prova
+                if (user.equalsIgnoreCase("mosso") && pass.equals("1234")) {
+                    iniciarSessio("MOZO");
+                } else if (user.equalsIgnoreCase("xofer") && pass.equals("1234")) {
+                    iniciarSessio("TRANSPORTISTA");
+                } else {
+                    Toast.makeText(this, "Credencials incorrectes. Prova: mosso/1234 o xofer/1234", Toast.LENGTH_LONG).show();
                 }
-
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("USER_ROLE", role);
-                startActivity(intent);
-                finish();
             }
         });
+    }
+
+    private void iniciarSessio(String rol) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("USER_ROLE", rol);
+        startActivity(intent);
+        finish(); // Tanquem el login perquè no puguin tornar enrere
     }
 }
