@@ -1,6 +1,8 @@
 package com.example.logitex_app;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -9,13 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
+import com.example.logitex_app.ui.auth.LoginActivity;
+import com.example.logitex_app.ui.mozo.PickingFragment;
+import com.example.logitex_app.ui.mozo.UbicacionFragment;
+import com.example.logitex_app.ui.transportista.IncidenciasFragment;
+import com.example.logitex_app.ui.transportista.RutasFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNav;
-    private TextView tvPlaceholder, tvHeaderTitle;
+    private TextView tvHeaderTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +38,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         bottomNav = findViewById(R.id.bottom_navigation);
-        tvPlaceholder = findViewById(R.id.tvPlaceholder);
         tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
+        ImageView btnLogout = findViewById(R.id.btnLogout);
+
+        // Lógica para cerrar sesión
+        btnLogout.setOnClickListener(v -> {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            Toast.makeText(this, getString(R.string.desc_logout), Toast.LENGTH_SHORT).show();
+        });
 
         String rol = getIntent().getStringExtra("USER_ROLE");
 
@@ -46,18 +61,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // --- MÈTODE MÀGIC PER CANVIAR DE PANTALLA ---
+    private void cargarFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+    }
+
     private void configurarMenuMozo() {
         tvHeaderTitle.setText(getString(R.string.header_mozo));
         bottomNav.inflateMenu(R.menu.menu_mozo);
-        tvPlaceholder.setText(getString(R.string.msg_picking));
+
+        // Carregar pantalla per defecte a l'entrar
+        cargarFragment(new PickingFragment());
 
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_picking) {
-                tvPlaceholder.setText(getString(R.string.msg_picking));
+                cargarFragment(new PickingFragment());
                 return true;
             } else if (itemId == R.id.nav_qr) {
-                tvPlaceholder.setText(getString(R.string.msg_escaner));
+                cargarFragment(new UbicacionFragment());
                 return true;
             }
             return false;
@@ -67,15 +92,17 @@ public class MainActivity extends AppCompatActivity {
     private void configurarMenuTransportista() {
         tvHeaderTitle.setText(getString(R.string.header_transportista));
         bottomNav.inflateMenu(R.menu.menu_transportista);
-        tvPlaceholder.setText(getString(R.string.msg_rutas));
+
+        // Carregar pantalla per defecte a l'entrar
+        cargarFragment(new RutasFragment());
 
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_rutas) {
-                tvPlaceholder.setText(getString(R.string.msg_rutas));
+                cargarFragment(new RutasFragment());
                 return true;
             } else if (itemId == R.id.nav_incidencias) {
-                tvPlaceholder.setText(getString(R.string.msg_incidencias));
+                cargarFragment(new IncidenciasFragment());
                 return true;
             }
             return false;
