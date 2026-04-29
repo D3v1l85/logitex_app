@@ -6,6 +6,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.logitex_app.MainActivity;
 import com.example.logitex_app.R;
+//import com.example.logitex_app.model.LoginResponse;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -43,9 +44,28 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void iniciarSessio(String rol) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("USER_ROLE", rol);
+        /*if (response.isSuccessful() && response.body() != null) {
+            LoginResponse loginResponse = response.body();
+
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+            // Pasamos el nombre que acabamos de definir en la clase superior
+            intent.putExtra("USER_NAME", loginResponse.getNom());
+
+            // Determinamos el rol según el ID numérico de vuestra base de datos
+            String role = (loginResponse.getRolId() == 3) ? "MOZO" : "TRANSPORTISTA";
+            intent.putExtra("USER_ROLE", role);
+
+            startActivity(intent);
+            finish();
+        }*/
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+        // Posem dades simulades (mock) de moment per provar la interfície
+        intent.putExtra("USER_NAME", "Bagner (Prova)");
+        intent.putExtra("USER_ROLE", "MOZO"); // O "MOZO", el que vulguis provar
+
         startActivity(intent);
-        finish(); // Tanquem el login perquè no puguin tornar enrere
+        finish();
     }
 }

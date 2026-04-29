@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.logitex_app.ui.home.HomeFragment;
 import com.example.logitex_app.ui.auth.LoginActivity;
 import com.example.logitex_app.ui.mozo.PickingFragment;
 import com.example.logitex_app.ui.mozo.UbicacionFragment;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNav;
     private TextView tvHeaderTitle;
+    private ImageView btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.bottom_navigation);
         tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
-        ImageView btnLogout = findViewById(R.id.btnLogout);
+        btnLogout = findViewById(R.id.btnLogout);
 
         // Lógica para cerrar sesión
         btnLogout.setOnClickListener(v -> {
@@ -48,8 +50,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.desc_logout), Toast.LENGTH_SHORT).show();
         });
 
+        // 1. Recuperamos los datos del Intent (enviados desde LoginActivity)
         String rol = getIntent().getStringExtra("USER_ROLE");
+        String nombre = getIntent().getStringExtra("USER_NAME");
 
+        // 2. Configuramos el menú según el rol (Solo preparamos el menú, no cargamos pantallas)
         if (rol != null) {
             if (rol.equals("MOZO")) {
                 configurarMenuMozo();
@@ -59,9 +64,18 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, getString(R.string.error_rol), Toast.LENGTH_SHORT).show();
         }
+
+        // 3. Cargamos el HomeFragment (Bienvenida) como pantalla fija inicial
+        HomeFragment home = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putString("arg_nombre", nombre);
+        home.setArguments(args);
+
+        // Esta será la única carga de fragmento al iniciar la actividad
+        cargarFragment(home);
     }
 
-    // --- MÈTODE MÀGIC PER CANVIAR DE PANTALLA ---
+    // Método centralizado para cambiar de pantalla
     private void cargarFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -73,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
         tvHeaderTitle.setText(getString(R.string.header_mozo));
         bottomNav.inflateMenu(R.menu.menu_mozo);
 
-        // Carregar pantalla per defecte a l'entrar
-        cargarFragment(new PickingFragment());
+        // HEMOS QUITADO: cargarFragment(new PickingFragment()) de aquí
+        // para que no sustituya a la bienvenida automáticamente.
 
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -93,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
         tvHeaderTitle.setText(getString(R.string.header_transportista));
         bottomNav.inflateMenu(R.menu.menu_transportista);
 
-        // Carregar pantalla per defecte a l'entrar
-        cargarFragment(new RutasFragment());
+        // HEMOS QUITADO: cargarFragment(new RutasFragment()) de aquí
+        // para que no sustituya a la bienvenida automáticamente.
 
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

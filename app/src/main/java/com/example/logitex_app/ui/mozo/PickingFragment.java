@@ -1,66 +1,89 @@
 package com.example.logitex_app.ui.mozo;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.logitex_app.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PickingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Arrays;
+import java.util.List;
+
 public class PickingFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public PickingFragment() {}
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public PickingFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PickingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PickingFragment newInstance(String param1, String param2) {
-        PickingFragment fragment = new PickingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_picking, container, false);
+
+        RecyclerView recyclerView = view.findViewById(R.id.rvPickingList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Dades de prova (Mock Data) fins que connectem amb l'API
+        List<String> tasques = Arrays.asList(
+                "Palet #1024 - Passadís 2, Est. A",
+                "Palet #1025 - Passadís 4, Est. C",
+                "Palet #1026 - Passadís 1, Est. B",
+                "Palet #1027 - Passadís 5, Est. A"
+        );
+
+        // Configurem l'adaptador ràpid
+        MockPickingAdapter adapter = new MockPickingAdapter(tasques);
+        recyclerView.setAdapter(adapter);
+
+        return view;
+    }
+
+    // --- ADAPTADOR RÀPID (Només per veure disseny) ---
+    private class MockPickingAdapter extends RecyclerView.Adapter<MockPickingAdapter.ViewHolder> {
+        private List<String> dades;
+
+        public MockPickingAdapter(List<String> dades) {
+            this.dades = dades;
         }
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_picking, container, false);
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_picking, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            String[] parts = dades.get(position).split(" - ");
+            holder.tvPaletId.setText(parts[0]);
+            holder.tvUbicacion.setText(parts[1]);
+
+            // Acció en clicar un palet
+            holder.itemView.setOnClickListener(v ->
+                    Toast.makeText(getContext(), "Has seleccionat: " + parts[0], Toast.LENGTH_SHORT).show()
+            );
+        }
+
+        @Override
+        public int getItemCount() {
+            return dades.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tvPaletId, tvUbicacion;
+            ViewHolder(View itemView) {
+                super(itemView);
+                tvPaletId = itemView.findViewById(R.id.tvPaletId);
+                tvUbicacion = itemView.findViewById(R.id.tvUbicacion);
+            }
+        }
     }
 }

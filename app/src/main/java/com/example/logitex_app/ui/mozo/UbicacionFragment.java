@@ -1,66 +1,52 @@
 package com.example.logitex_app.ui.mozo;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.logitex_app.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UbicacionFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class UbicacionFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public UbicacionFragment() {
-        // Required empty public constructor
+        // Constructor buit necessari
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UbicacionFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UbicacionFragment newInstance(String param1, String param2) {
-        UbicacionFragment fragment = new UbicacionFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_ubicacion, container, false);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ubicacion, container, false);
+        // Enllacem els elements del disseny
+        Button btnEscanear = view.findViewById(R.id.btnEscanear);
+        Button btnConfirmarManual = view.findViewById(R.id.btnConfirmarManual);
+        EditText etCodigoManual = view.findViewById(R.id.etCodigoManual);
+
+        // Botó per obrir la càmera (Això ho farem real més endavant)
+        btnEscanear.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "FUTUR: Aquí demanarem permisos i obrirem la càmera!", Toast.LENGTH_LONG).show();
+        });
+
+        // Botó per introduir codi a mà (Molt útil si falla el QR)
+        btnConfirmarManual.setOnClickListener(v -> {
+            String codi = etCodigoManual.getText().toString().trim();
+
+            if (!codi.isEmpty()) {
+                Toast.makeText(getContext(), "Codi validat correctament: " + codi, Toast.LENGTH_SHORT).show();
+                etCodigoManual.setText(""); // Netegem el camp després de confirmar
+            } else {
+                Toast.makeText(getContext(), "Si us plau, introdueix un codi vàlid", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return view;
     }
 }
