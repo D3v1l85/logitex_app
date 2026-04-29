@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Posem dades simulades (mock) de moment per provar la interfície
         intent.putExtra("USER_NAME", "Bagner (Prova)");
-        intent.putExtra("USER_ROLE", "MOZO"); // O "MOZO", el que vulguis provar
+        intent.putExtra("USER_ROLE", "TRANSPORTISTA"); // O "MOZO", el que vulguis provar
 
         startActivity(intent);
         finish();
