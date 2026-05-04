@@ -63,13 +63,29 @@ public class PickingFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             String[] parts = dades.get(position).split(" - ");
-            holder.tvPaletId.setText(parts[0]);
-            holder.tvUbicacion.setText(parts[1]);
+            String idPalet = parts[0];
+            String ubicacion = parts[1];
 
-            // Acció en clicar un palet
-            holder.itemView.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "Has seleccionat: " + parts[0], Toast.LENGTH_SHORT).show()
-            );
+            holder.tvPaletId.setText(idPalet);
+            holder.tvUbicacion.setText(ubicacion);
+
+            // NOU CLIC EN LA TARGETA: Anar al detall del palet
+            holder.itemView.setOnClickListener(v -> {
+                DetallePickingFragment detalleFrag = new DetallePickingFragment();
+
+                // Passem les dades al nou Fragment
+                Bundle args = new Bundle();
+                args.putString("palet_id", idPalet);
+                args.putString("palet_ub", ubicacion);
+                detalleFrag.setArguments(args);
+
+                // Fem el canvi de pantalla
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, detalleFrag)
+                        .addToBackStack(null) // Permet tornar enrere
+                        .commit();
+            });
         }
 
         @Override
