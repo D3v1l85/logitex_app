@@ -83,6 +83,15 @@
                 app:cornerRadius="8dp" />
 
         </LinearLayout>
+
+        <!-- Ruedita de carga oculta por defecto -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

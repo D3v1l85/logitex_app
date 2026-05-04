@@ -1,6 +1,8 @@
 package com.example.logitex_app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,23 +45,32 @@ public class MainActivity extends AppCompatActivity {
         tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
         btnLogout = findViewById(R.id.btnLogout);
 
-        // Lógica para cerrar sesión
+        // --- NUEVA LÓGICA DE LOGOUT (Borrar la memoria) ---
         btnLogout.setOnClickListener(v -> {
+            // Borramos el token y el rol de las preferencias
+            SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+            prefs.edit().clear().apply();
+
+            // Volvemos al Login
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             Toast.makeText(this, getString(R.string.desc_logout), Toast.LENGTH_SHORT).show();
         });
 
-        // 1. Recuperamos los datos del Intent (enviados desde LoginActivity)
-        String rol = getIntent().getStringExtra("USER_ROLE");
-        String nombre = getIntent().getStringExtra("USER_NAME");
+        // 1. Recuperamos los datos de SharedPreferences primero, y si no, del Intent
+        SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        String rol = prefs.getString("ROL_USUARIO", getIntent().getStringExtra("USER_ROLE"));
+        String nombre = getIntent().getStringExtra("USER_NAME"); // Dejamos el nombre por defecto de momento
 
-        // 2. Configuramos el menú según el rol (Solo preparamos el menú, no cargamos pantallas)
+        // 2. Configuramos el menú según el rol (Ignorando mayúsculas y aceptando mozo/mosso)
         if (rol != null) {
-            if (rol.equals("MOZO")) {
+            if (rol.equalsIgnoreCase("MOZO") || rol.equalsIgnoreCase("MOSSO")) {
                 configurarMenuMozo();
-            } else if (rol.equals("TRANSPORTISTA")) {
+            } else if (rol.equalsIgnoreCase("TRANSPORTISTA")) {
                 configurarMenuTransportista();
+            } else {
+                // Por si acaso el rol no es ninguno de los dos
+                Toast.makeText(this, "Rol desconegut: " + rol, Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(this, getString(R.string.error_rol), Toast.LENGTH_SHORT).show();
@@ -87,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
         tvHeaderTitle.setText(getString(R.string.header_mozo));
         bottomNav.inflateMenu(R.menu.menu_mozo);
 
-        // HEMOS QUITADO: cargarFragment(new PickingFragment()) de aquí
-        // para que no sustituya a la bienvenida automáticamente.
-
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_picking) {
@@ -106,9 +114,6 @@ public class MainActivity extends AppCompatActivity {
     private void configurarMenuTransportista() {
         tvHeaderTitle.setText(getString(R.string.header_transportista));
         bottomNav.inflateMenu(R.menu.menu_transportista);
-
-        // HEMOS QUITADO: cargarFragment(new RutasFragment()) de aquí
-        // para que no sustituya a la bienvenida automáticamente.
 
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

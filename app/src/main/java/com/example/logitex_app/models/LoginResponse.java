@@ -1,4 +1,4 @@
-package com.example.logitex_app.model;
+package com.example.logitex_app.models;
 
 import com.google.gson.annotations.SerializedName;
 
