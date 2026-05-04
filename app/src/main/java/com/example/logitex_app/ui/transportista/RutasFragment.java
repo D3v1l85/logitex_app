@@ -61,16 +61,34 @@ public class RutasFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             String[] parts = dades.get(position).split(" - ");
-            holder.tvRutaId.setText(parts[0]);
-            holder.tvDestino.setText(parts[1]);
+            String idAlbara = parts[0];
+            String direccion = parts[1];
 
+            holder.tvRutaId.setText(idAlbara);
+            holder.tvDestino.setText(direccion);
+
+            // Clic en el botoncito de la cámara integrado
             holder.btnScan.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "Obrint càmera per confirmar: " + parts[0], Toast.LENGTH_SHORT).show()
+                    Toast.makeText(getContext(), "Obrint càmera ràpida per: " + idAlbara, Toast.LENGTH_SHORT).show()
             );
 
-            holder.itemView.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "Detalls de l'entrega: " + parts[1], Toast.LENGTH_SHORT).show()
-            );
+            // NOU CLIC EN LA TARGETA: Anar al detall
+            holder.itemView.setOnClickListener(v -> {
+                DetalleRutaFragment detalleFrag = new DetalleRutaFragment();
+
+                // Passem les dades (Mock) al nou Fragment
+                Bundle args = new Bundle();
+                args.putString("albara_id", idAlbara);
+                args.putString("albara_dir", direccion);
+                detalleFrag.setArguments(args);
+
+                // Fem el canvi de pantalla
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, detalleFrag)
+                        .addToBackStack(null) // Això fa que si prems "Tornar" al mòbil, tornis a la llista!
+                        .commit();
+            });
         }
 
         @Override

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvDetalleAlbara"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Detall: #ALB-501"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dades de l'Entrega"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#0056b3"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvDetalleDireccion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Direcció: C/ Aragó 123, Barcelona"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Client: Supermercats Paco"
+                android:textSize="16sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bultos: 2 Palets"
+                android:textSize="16sp"
+                android:textColor="#666666"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/btnAbrirEscaner"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="ESCANETJAR I LLIURAR"
+        android:backgroundTint="#4CAF50"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"
+        app:cornerRadius="8dp"/>
+
+    <Button
+        android:id="@+id/btnAbrirIncidencia"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="REPORTAR INCIDÈNCIA"
+        android:backgroundTint="#F44336"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"/>
+
+</LinearLayout>
