@@ -1,84 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center_horizontal"
+    android:fillViewport="true"
     android:background="#F5F5F5">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Escàner d'Ubicació"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#333333"
-        android:layout_marginBottom="24dp"
-        android:layout_marginTop="16dp"/>
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        android:layout_marginBottom="24dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#E0E0E0"
-            android:gravity="center"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@android:drawable/ic_menu_camera"
-                app:tint="#757575"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="La càmera s'obrirà aquí"
-                android:layout_marginTop="8dp"
-                android:textColor="#757575"/>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <Button
-        android:id="@+id/btnEscanear"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Activar Escàner QR"
-        android:backgroundTint="#0056b3"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="- O introdueix manualment -"
-        android:textColor="#666666"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/etCodigoManual"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Codi del palet (Ex: SSCC...)"
-        android:background="@android:color/white"
+        android:orientation="vertical"
         android:padding="16dp"
-        android:elevation="2dp"
-        android:layout_marginBottom="16dp"/>
+        android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/btnConfirmarManual"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Confirmar Codi"
-        android:backgroundTint="#4CAF50"
-        android:textColor="@android:color/white"
-        android:padding="12dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Escàner d'Ubicació"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="16dp"/>
 
-</LinearLayout>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.journeyapps.barcodescanner.DecoratedBarcodeView
+                    android:id="@+id/barcode_scanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="- O introdueix manualment -"
+            android:textColor="#666666"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etCodigoManual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Codi del palet (Ex: SSCC...)"
+            android:inputType="textCapCharacters"
+            android:background="@android:color/white"
+            android:padding="16dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="16dp"
+            android:importantForAutofill="no"/>
+
+        <Button
+            android:id="@+id/btnConfirmarManual"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Confirmar Codi"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="32dp"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -10,7 +10,7 @@ public class RetrofitClient {
     // ⚠️ ATENCIÓN AQUÍ: Si el backend de tu equipo está en tu propio PC y usas el emulador de Android,
     // Android no entiende "localhost". Tienes que usar "10.0.2.2".
     // Si la web ya está subida a internet, pon aquí su URL completa (ej: "https://midominio.com/").
-    private static final String BASE_URL = "http://172.19.100.221:8080/"; // Cambia el 8000 por vuestro puerto real
+    private static final String BASE_URL = "http://10.147.17.250:8084/"; // Cambia el 8000 por vuestro puerto real
 
     private static Retrofit retrofit = null;
 
