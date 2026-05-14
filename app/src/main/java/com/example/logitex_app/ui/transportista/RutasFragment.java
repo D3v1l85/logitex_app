@@ -1,5 +1,7 @@
 package com.example.logitex_app.ui.transportista;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,78 +18,149 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.logitex_app.R;
+import com.example.logitex_app.api.ApiService;
+import com.example.logitex_app.api.RetrofitClient;
+import com.example.logitex_app.models.Ordre;
+import com.google.gson.JsonObject;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RutasFragment extends Fragment {
 
-    public RutasFragment() {}
+    private String idOrdenParaEscanerRapido = "";
+    private List<Ordre> listaOrdenes = new ArrayList<>();
+    private RutasAdapter adapter;
+
+    private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+                if (result.getContents() != null) {
+                    actualizarEstadoRapido(idOrdenParaEscanerRapido);
+                }
+            }
+    );
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Aquí usamos "container", no "parent"
         View view = inflater.inflate(R.layout.fragment_rutas, container, false);
-
         RecyclerView recyclerView = view.findViewById(R.id.rvRutasList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Datos Mock para las rutas
-        List<String> rutes = Arrays.asList(
-                "Albarà: #ALB-501 - C/ Aragó 123 (Barcelona)",
-                "Albarà: #ALB-502 - Polígon Sud, Nau 4 (Tarragona)",
-                "Albarà: #ALB-503 - Av. Diagonal 450 (Barcelona)",
-                "Albarà: #ALB-504 - C/ Major 12 (Girona)"
-        );
+        adapter = new RutasAdapter(listaOrdenes);
+        recyclerView.setAdapter(adapter);
 
-        recyclerView.setAdapter(new RutasAdapter(rutes));
+        obtenerOrdenesDelServidor();
         return view;
     }
 
-    // --- CLASE ADAPTADOR (Aquí es donde sí existe "parent") ---
-    private class RutasAdapter extends RecyclerView.Adapter<RutasAdapter.ViewHolder> {
-        private List<String> dades;
+    private void obtenerOrdenesDelServidor() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        String token = prefs.getString("TOKEN_AUTH", "");
 
-        public RutasAdapter(List<String> dades) { this.dades = dades; }
+        // Recuperamos los datos del usuario real (dinámico)
+        String nombreLogueado = prefs.getString("USER_NOM", "Usuari");
+        int rolLogueado = prefs.getInt("USER_ROL", 4);
+
+        // ¡EL CHIVATO! Fíjate en qué nombre aparece aquí cuando entres
+        Toast.makeText(getContext(), "🔍 Cercant rutes de: '" + nombreLogueado + "'", Toast.LENGTH_LONG).show();
+
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<List<Ordre>> call = apiService.getOrdres("Bearer " + token, rolLogueado, nombreLogueado);
+
+        call.enqueue(new Callback<List<Ordre>>() {
+            @Override
+            public void onResponse(Call<List<Ordre>> call, Response<List<Ordre>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listaOrdenes.clear();
+                    listaOrdenes.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+
+                    if (listaOrdenes.isEmpty()) {
+                        Toast.makeText(getContext(), "La API ha retornat 0 rutes", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Ordre>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de connexió", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void actualizarEstadoRapido(String idOrden) {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        String token = prefs.getString("TOKEN_AUTH", "");
+        int idLimpio = Integer.parseInt(idOrden.replaceAll("[^0-9]", ""));
+
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<JsonObject> call = apiService.cambiarEstadoOrden("Bearer " + token, idLimpio, "EN RUTA");
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Ruta en marxa!", Toast.LENGTH_SHORT).show();
+                    obtenerOrdenesDelServidor();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(getContext(), "Error al servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private class RutasAdapter extends RecyclerView.Adapter<RutasAdapter.ViewHolder> {
+        private List<Ordre> dades;
+        public RutasAdapter(List<Ordre> dades) { this.dades = dades; }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // Fíjate que aquí usamos R.layout.item_ruta (esto quita tu error de la línea 54)
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ruta, parent, false);
             return new ViewHolder(v);
         }
 
-        @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            String[] parts = dades.get(position).split(" - ");
-            String idAlbara = parts[0];
-            String direccion = parts[1];
+            Ordre ordre = dades.get(position);
 
-            holder.tvRutaId.setText(idAlbara);
-            holder.tvDestino.setText(direccion);
+            // Mostramos el nombre de la orden (identificador) en lugar del albarán
+            holder.tvRutaId.setText(ordre.getIdentificador());
+            holder.tvDestino.setText("Destí: " + ordre.getDireccio());
 
-            // Clic en el botoncito de la cámara integrado
-            holder.btnScan.setOnClickListener(v ->
-                    Toast.makeText(getContext(), "Obrint càmera ràpida per: " + idAlbara, Toast.LENGTH_SHORT).show()
-            );
+            holder.btnScan.setOnClickListener(v -> {
+                idOrdenParaEscanerRapido = String.valueOf(ordre.getId());
+                ScanOptions options = new ScanOptions();
+                // El prompt puede seguir mencionando el albarán si el QR físico lo usa
+                options.setPrompt("Escaneja per l'albarà: " + ordre.getReferencia());
+                options.setOrientationLocked(false);
+                barcodeLauncher.launch(options);
+            });
 
-            // NOU CLIC EN LA TARGETA: Anar al detall
             holder.itemView.setOnClickListener(v -> {
                 DetalleRutaFragment detalleFrag = new DetalleRutaFragment();
-
-                // Passem les dades (Mock) al nou Fragment
                 Bundle args = new Bundle();
-                args.putString("albara_id", idAlbara);
-                args.putString("albara_dir", direccion);
+                args.putInt("id_orden", ordre.getId());
+                args.putString("orden_nom", ordre.getIdentificador()); // Pasamos el nombre
+                args.putString("albara_id", ordre.getReferencia());   // Pasamos el albarán
+                args.putString("albara_dir", ordre.getDireccio());
+                args.putString("albara_estat", ordre.getEstat());
                 detalleFrag.setArguments(args);
 
-                // Fem el canvi de pantalla
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, detalleFrag)
-                        .addToBackStack(null) // Això fa que si prems "Tornar" al mòbil, tornis a la llista!
+                        .addToBackStack(null)
                         .commit();
             });
         }

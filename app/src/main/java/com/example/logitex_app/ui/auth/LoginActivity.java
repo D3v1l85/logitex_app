@@ -18,6 +18,7 @@ import com.example.logitex_app.MainActivity;
 import com.example.logitex_app.R;
 import com.example.logitex_app.api.ApiService;
 import com.example.logitex_app.api.RetrofitClient;
+import com.example.logitex_app.models.LoginResponse;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
@@ -37,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // ¡ATENCIÓN! Asegúrate de que este ID sea el correcto (etUser o el que pusiste antes)
         etEmail = findViewById(R.id.etUser);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
@@ -65,27 +65,36 @@ public class LoginActivity extends AppCompatActivity {
         jsonLogin.addProperty("password", password);
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<JsonObject> call = apiService.loginUser(jsonLogin);
+        Call<LoginResponse> call = apiService.loginUser(jsonLogin);
 
-        call.enqueue(new Callback<JsonObject>() {
+        call.enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
                 btnLogin.setEnabled(true);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    // 1. Extraemos el token del JSON
-                    String token = response.body().get("token").getAsString();
+                    LoginResponse loginData = response.body();
 
-                    // 2. Desencriptamos el token para ver qué rol tiene
-                    String rolTexto = descifrarRolDelToken(token);
+                    String token = loginData.getToken();
+                    String nombreReal = loginData.getNom();
+                    int idRol = loginData.getRolId();
 
-                    // 3. Guardamos el token en la memoria del móvil
-                    guardarSesion(token, rolTexto);
+                    // MEJORA: Búsqueda exhaustiva del nombre en el Token si viene nulo
+                    if (nombreReal == null || nombreReal.isEmpty()) {
+                        nombreReal = extraerDatoDelToken(token, "nom", "Usuari");
+                    }
+                    if (idRol == 0) {
+                        try {
+                            idRol = Integer.parseInt(extraerDatoDelToken(token, "idRol", "4"));
+                        } catch (Exception e) { idRol = 4; } // Por defecto transportista si falla
+                    }
 
-                    Toast.makeText(LoginActivity.this, "Benvingut!", Toast.LENGTH_SHORT).show();
+                    String rolTexto = determinarRolTexto(idRol);
+                    guardarSesion(token, rolTexto, nombreReal, idRol);
 
-                    // 4. Vamos a la pantalla principal
+                    Toast.makeText(LoginActivity.this, "Login OK: " + nombreReal, Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("USER_ROLE", rolTexto);
                     startActivity(intent);
@@ -97,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
                 btnLogin.setEnabled(true);
                 Toast.makeText(LoginActivity.this, "Error de connexió al servidor", Toast.LENGTH_LONG).show();
@@ -105,40 +114,43 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // --- MAGIA DE JWT: Función para sacar el rol oculto en el token ---
-    private String descifrarRolDelToken(String token) {
-        try {
-            // El JWT tiene 3 partes separadas por puntos. La información está en la parte del medio (índice 1)
-            String[] split = token.split("\\.");
-            String payloadBase64 = split[1];
-
-            // Lo desciframos de Base64 a Texto normal
-            String payloadJson = new String(Base64.decode(payloadBase64, Base64.URL_SAFE));
-
-            // Lo convertimos en JSON para leer el "idRol"
-            JSONObject jsonObject = new JSONObject(payloadJson);
-            int idRol = jsonObject.getInt("idRol");
-
-
-            if (idRol == 3) {
-                return "mosso";
-            } else if (idRol == 4) { // Suponiendo que el 4 sea transportista
-                return "transportista";
-            } else {
-                return "admin";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "mosso"; // Por defecto si algo falla
-        }
+    private String determinarRolTexto(int idRol) {
+        if (idRol == 3) return "mosso";
+        if (idRol == 4) return "transportista";
+        return "admin";
     }
 
-    // --- Función para guardar los datos en SharedPreferences ---
-    private void guardarSesion(String token, String rol) {
+    private void guardarSesion(String token, String rolTexto, String nombre, int rolId) {
         SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("TOKEN_AUTH", token);
-        editor.putString("ROL_USUARIO", rol);
-        editor.apply(); // Guarda de forma asíncrona
+        editor.putString("ROL_USUARIO", rolTexto);
+        editor.putString("USER_NOM", nombre);
+        editor.putInt("USER_ROL", rolId);
+        editor.apply();
+    }
+
+    // --- Lector Inteligente del Token ---
+    private String extraerDatoDelToken(String token, String key, String valorPorDefecto) {
+        try {
+            String[] split = token.split("\\.");
+            String payloadJson = new String(Base64.decode(split[1], Base64.URL_SAFE));
+
+            // ¡CHIVATO! Esto saldrá en el Logcat de Android Studio para ver qué envía el backend
+            Log.d("TOKEN_PAYLOAD", "Contenido del JWT: " + payloadJson);
+
+            JSONObject jsonObject = new JSONObject(payloadJson);
+
+            if (jsonObject.has(key)) return jsonObject.getString(key);
+            // Intentamos alternativas comunes si la clave original no existe
+            if (key.equals("nom") && jsonObject.has("nombre")) return jsonObject.getString("nombre");
+            if (key.equals("nom") && jsonObject.has("username")) return jsonObject.getString("username");
+            if (key.equals("nom") && jsonObject.has("sub")) return jsonObject.getString("sub"); // El email a veces va aquí
+
+            return valorPorDefecto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return valorPorDefecto;
+        }
     }
 }
