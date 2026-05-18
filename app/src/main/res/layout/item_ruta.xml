@@ -2,12 +2,16 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:strokeColor="#E0E0E0"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +24,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@android:drawable/ic_dialog_map"
-            app:tint="#4CAF50" />
+            app:tint="#4CAF50"
+            android:contentDescription="@string/menu_rutas"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -33,19 +38,16 @@
                 android:id="@+id/tvRutaId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Albarà: #ALB-501"
+                tools:text="Albarà: #ALB-501"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#333333" />
-
-            <TextView
-                android:id="@+id/tvDestino"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Destí: C/ Tarragona, 45 (Barcelona)"
-                android:textSize="14sp"
-                android:textColor="#666666" />
-        </LinearLayout>
+                android:textColor="#111111" /> <TextView
+            android:id="@+id/tvDestino"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Destí: C/ Tarragona, 45 (Barcelona)"
+            android:textSize="14sp"
+            android:textColor="#444444" /> </LinearLayout>
 
         <ImageButton
             android:id="@+id/btnScanRuta"
@@ -53,8 +55,8 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_camera"
-            app:tint="#0056b3"
-            android:contentDescription="Escanejar entrega" />
+            app:tint="@color/logitex_blue"
+            android:contentDescription="@string/menu_escaner" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNav;
     private TextView tvHeaderTitle;
-    private ImageView btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         bottomNav = findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.getMenu().setGroupCheckable(0, false, true);
         tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
-        btnLogout = findViewById(R.id.btnLogout);
+        ImageView btnLogout = findViewById(R.id.btnLogout);
 
         // --- NUEVA LÓGICA DE LOGOUT (Borrar la memoria) ---
         btnLogout.setOnClickListener(v -> {

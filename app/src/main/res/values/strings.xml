@@ -22,9 +22,81 @@
     <string name="menu_rutas">Rutes</string>
     <string name="menu_incidencias">Incidències</string>
     <string name="desc_logout">Sessió tancada correctament</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <!-- <string name="app_name">Clicks_Bagner_Carrion</string> -->
     <string name="welcome_msg">Hola, benvingut!</string>
     <string name="default_user">Usuari</string>
+
+    <string name="label_selecciona_ordre">Selecciona l\'Ordre afectada</string>
+    <string name="label_tipus_incidencia">Tipus d\'incidència</string>
+    <string name="label_descripcio">Descripció detallada</string>
+    <string name="hint_descripcio">Explica què ha passat exactament&#8230;</string>
+    <string name="btn_enviar_report">ENVIAR REPORT A CENTRAL</string>
+    <string name="opcio_selecciona_ordre">Selecciona una ordre&#8230;</string>
+    <string name="opcio_selecciona_tipus">Selecciona un tipus&#8230;</string>
+    <string name="tipus_retard">Retard entrega</string>
+    <string name="tipus_error_adreca">Error adreça</string>
+    <string name="tipus_dany">Mercaderia danyada</string>
+    <string name="tipus_qualitat">Problema qualitat</string>
+    <string name="tipus_altres">Altres</string>
+    <string name="err_selecciona_ordre">Si us plau, selecciona l\'ordre afectada</string>
+    <string name="err_selecciona_tipus">Si us plau, selecciona el tipus d\'incidència</string>
+    <string name="err_descripcio_buida">La descripció és obligatòria</string>
+    <string name="msg_incidencia_ok">Incidència enviada correctament</string>
+    <string name="err_sessio">Error: No s\'ha detectat l\'usuari</string>
+
+    <string name="hint_codi_manual">- O introdueix el codi manualment -</string>
+    <string name="hint_ex_codi">Ex: 12345</string>
+    <string name="btn_confirmar_manual">CONFIRMAR CODI MANUAL</string>
+    <string name="btn_rebre_mercaderia">REBRE MERCADERIA (Càmera)</string>
+    <string name="btn_confirmar_lliurament">CONFIRMAR LLIURAMENT (Càmera)</string>
+    <string name="msg_escaneig_cancel">Escaneig cancel·lat</string>
+    <string name="msg_introdueix_codi">Introdueix el codi primer</string>
+    <string name="prompt_rebre">Enquadra el codi QR per REBRE</string>
+    <string name="prompt_lliurar">Enquadra el codi QR per LLIURAR</string>
+    <string name="err_servidor">Error del servidor: %1$d</string>
+    <string name="err_connexio">Error de connexió</string>
+    <string name="toast_ruta_iniciada">Ruta en marxa!</string>
+    <string name="toast_cap_ruta">Cap ruta assignada per a %1$s</string>
+    <string name="prompt_escaneja_albara">Escaneja per l\'albarà: %1$s</string>
+
+    <string name="format_ordre">Ordre: %1$s</string>
+    <string name="format_albara_direccio">Albarà: %1$s\nDirecció: %2$s</string>
+    <string name="format_estat">Estat: %1$s</string>
+    <string name="format_desti">Destí: %1$s</string>
+    <string name="format_estat_finalitzada">FINALITZADA: %1$s</string>
+    <string name="format_ordre_actualitzada">Ordre actualitzada a %1$s</string>
+    <string name="format_cercant_rutes">Cercant rutes de: \'%1$s\'</string>
+    <string name="format_lot">Lot: %1$s</string>
+    <string name="format_lot_id">Lot: %1$s (ID: %2$s)</string>
+    <string name="format_estat_actual">Estat actual: %1$s</string>
+    <string name="format_estat_actualitzat">Estat actualitzat correctament a %1$s</string>
+    <string name="format_codi_llegit">Codi llegit: %1$s</string>
+    <string name="format_error_connexio_detall">Error de connexió: %1$s</string>
+
+    <string name="err_sessio_caducada">Error: Sessió caducada</string>
+    <string name="err_descarregar_palets">Error al descarregar els palets</string>
+    <string name="msg_permis_camera">Necessitem la càmera per escanejar</string>
+    <string name="err_codi_qr_invalid">Error: El codi QR no és vàlid</string>
+    <string name="title_ubicacio_magatzem">Ubicació al Magatzem</string>
+    <string name="title_dades_palet">Dades del Palet</string>
+    <string name="btn_escananejar_recollir">ESCANETJAR I RECOLLIR</string>
+    <string name="val_desconeguda">Desconeguda</string>
+    <string name="pes_aproximat">Pes aproximat: 250 kg</string>
+
+    <string name="btn_idioma_placeholder">EN / CA</string>
+    <string name="desc_logo">Logo de LogiTex</string>
+    <string name="title_benvingut">Benvingut</string>
+    <string name="hint_usuari">Correu electrònic</string>
+    <string name="hint_contrasenya">Contrasenya</string>
+    <string name="btn_iniciar_sessio">INICIAR SESSIÓ</string>
+
+    <string name="label_mozo_responsable">Mozo de magatzem responsable</string>
+    <string name="opcio_selecciona_mozo">Selecciona un mozo&#8230;</string>
+    <string name="err_selecciona_mozo">Si us plau, selecciona el mozo responsable</string>
+
+    <string name="btn_veure_ruta" translatable="false">VEURE RUTA AL MAPA</string>
+
+    <string name="title_rutes_assignades">Rutes Assignades</string>
+    <string name="title_tasques_picking">Tasques de Picking</string>
+    <string name="msg_carregant_splash" translatable="false">Carregant LogiTex&#8230;</string>
 </resources>

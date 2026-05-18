@@ -33,22 +33,23 @@ import retrofit2.Response;
 
 public class IncidenciasFragment extends Fragment {
 
-    private Spinner spinnerRutas, spinnerTipo;
+    private Spinner spinnerRutas, spinnerTipo, spinnerMozos;
     private EditText etDesc;
-    // Guardaremos solo las órdenes activas (no entregadas)
-    private List<Ordre> misOrdenesActivas = new ArrayList<>();
-
-    // Opciones del frontend
-    private final String[] tiposUI = {
-            "Selecciona un tipus...",
-            "Retard entrega",
-            "Error adreça",
-            "Mercaderia danyada",
-            "Problema qualitat",
-            "Altres"
-    };
+    private final List<Ordre> misOrdenesActivas = new ArrayList<>();
+    private final List<String> listaMozosDB = new ArrayList<>();
 
     public IncidenciasFragment() {}
+
+    private String[] getTiposUI() {
+        return new String[]{
+                getString(R.string.opcio_selecciona_tipus),
+                getString(R.string.tipus_retard),
+                getString(R.string.tipus_error_adreca),
+                getString(R.string.tipus_dany),
+                getString(R.string.tipus_qualitat),
+                getString(R.string.tipus_altres)
+        };
+    }
 
     @Nullable
     @Override
@@ -57,19 +58,30 @@ public class IncidenciasFragment extends Fragment {
 
         spinnerRutas = view.findViewById(R.id.spinnerRutas);
         spinnerTipo = view.findViewById(R.id.spinnerTipoIncidencia);
+        spinnerMozos = view.findViewById(R.id.spinnerMozos);
         etDesc = view.findViewById(R.id.etDescripcion);
         Button btnEnviar = view.findViewById(R.id.btnEnviarIncidencia);
 
-        // 1. Configurar el Spinner de Tipos (con adaptador personalizado para color negro)
-        ArrayAdapter<String> adapterTipos = crearAdaptadorNegro(tiposUI);
-        spinnerTipo.setAdapter(adapterTipos);
+        spinnerTipo.setAdapter(crearAdaptadorNegro(getTiposUI()));
 
-        // 2. Cargar las rutas vivas
         cargarRutasReales();
+        cargarMozosDisponibles(); // Carga la lista de Mozos
 
         btnEnviar.setOnClickListener(v -> enviarIncidenciaReal());
 
         return view;
+    }
+
+    private void cargarMozosDisponibles() {
+        listaMozosDB.clear();
+        listaMozosDB.add(getString(R.string.opcio_selecciona_mozo));
+
+        // Simulación de Mozos activos del sistema (Se puede sustituir por una llamada API corta)
+        listaMozosDB.add("Joan Martínez (ID: 301)");
+        listaMozosDB.add("Albert Torres (ID: 304)");
+        listaMozosDB.add("Carlos López (ID: 309)");
+
+        spinnerMozos.setAdapter(crearAdaptadorNegro(listaMozosDB.toArray(new String[0])));
     }
 
     private void cargarRutasReales() {
@@ -79,16 +91,15 @@ public class IncidenciasFragment extends Fragment {
         int rol = prefs.getInt("USER_ROL", 4);
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        apiService.getOrdres("Bearer " + token, rol, nombre).enqueue(new Callback<List<Ordre>>() {
+        apiService.getOrdres("Bearer " + token, rol, nombre).enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<List<Ordre>> call, Response<List<Ordre>> response) {
+            public void onResponse(@NonNull Call<List<Ordre>> call, @NonNull Response<List<Ordre>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     misOrdenesActivas.clear();
                     List<String> nombresSpinner = new ArrayList<>();
-                    nombresSpinner.add("Selecciona una ordre..."); // Opción vacía por defecto
+                    nombresSpinner.add(getString(R.string.opcio_selecciona_ordre));
 
                     for (Ordre o : response.body()) {
-                        // FILTRO: Solo añadimos si NO está entregado
                         if (!"ENTREGAT".equalsIgnoreCase(o.getEstat())) {
                             misOrdenesActivas.add(o);
                             nombresSpinner.add(o.getIdentificador() + " (" + o.getDireccio() + ")");
@@ -96,41 +107,42 @@ public class IncidenciasFragment extends Fragment {
                     }
 
                     if (getContext() != null) {
-                        ArrayAdapter<String> adapterRutas = crearAdaptadorNegro(nombresSpinner.toArray(new String[0]));
-                        spinnerRutas.setAdapter(adapterRutas);
+                        spinnerRutas.setAdapter(crearAdaptadorNegro(nombresSpinner.toArray(new String[0])));
                     }
                 }
             }
             @Override
-            public void onFailure(Call<List<Ordre>> call, Throwable t) {}
+            public void onFailure(@NonNull Call<List<Ordre>> call, @NonNull Throwable t) {}
         });
     }
 
     private void enviarIncidenciaReal() {
         int indexRuta = spinnerRutas.getSelectedItemPosition();
         int indexTipo = spinnerTipo.getSelectedItemPosition();
+        int indexMozo = spinnerMozos.getSelectedItemPosition();
 
-        // Validamos que no hayan elegido la opción "Selecciona..."
         if (indexRuta == 0) {
-            Toast.makeText(getContext(), "Si us plau, selecciona l'ordre afectada", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.err_selecciona_ordre), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (indexMozo == 0) {
+            Toast.makeText(getContext(), getString(R.string.err_selecciona_mozo), Toast.LENGTH_SHORT).show();
             return;
         }
         if (indexTipo == 0) {
-            Toast.makeText(getContext(), "Si us plau, selecciona el tipus d'incidència", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.err_selecciona_tipus), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String desc = etDesc.getText().toString().trim();
         if (desc.isEmpty()) {
-            Toast.makeText(getContext(), "La descripció és obligatòria", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.err_descripcio_buida), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Restamos 1 al index porque el 0 es "Selecciona..."
         int idOrdre = misOrdenesActivas.get(indexRuta - 1).getId();
-        String tipoSeleccionado = tiposUI[indexTipo];
-
-        // Mapeamos el texto de la interfaz al ENUM exacto de la base de datos
+        String mozoAsignado = listaMozosDB.get(indexMozo);
+        String tipoSeleccionado = getTiposUI()[indexTipo];
         String tipoEnumDB = mapearTipoBackend(tipoSeleccionado);
 
         SharedPreferences prefs = requireActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
@@ -140,54 +152,48 @@ public class IncidenciasFragment extends Fragment {
 
         JsonObject json = new JsonObject();
         json.addProperty("idOrdre", idOrdre);
-        json.addProperty("tipus", tipoEnumDB); // Enum de la BD: retard, error_adreca, dany, etc.
+        json.addProperty("tipus", tipoEnumDB);
         json.addProperty("titol", tipoSeleccionado);
         json.addProperty("descripcio", desc);
-        // Enviamos constancia explícita de quién lo crea
+        json.addProperty("mozo_responsable", mozoAsignado); // Enviamos el mozo vinculado
         json.addProperty("creador_nom", nomUsuari);
         json.addProperty("creador_rol", rolUsuari);
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        apiService.crearIncidencia("Bearer " + token, json).enqueue(new Callback<JsonObject>() {
+        apiService.crearIncidencia("Bearer " + token, json).enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Incidència enviada correctament", Toast.LENGTH_SHORT).show();
-                    getParentFragmentManager().popBackStack(); // Volver atrás
+                    Toast.makeText(getContext(), getString(R.string.msg_incidencia_ok), Toast.LENGTH_SHORT).show();
+                    getParentFragmentManager().popBackStack();
                 } else {
-                    Toast.makeText(getContext(), "Error del servidor: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.err_servidor, response.code()), Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(getContext(), "Error de connexió", Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                Toast.makeText(getContext(), getString(R.string.err_connexio), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // Traduce lo que ve el usuario a lo que la Base de Datos acepta
     private String mapearTipoBackend(String tipoUI) {
-        switch (tipoUI) {
-            case "Retard entrega": return "retard";
-            case "Error adreça": return "error_adreca";
-            case "Mercaderia danyada": return "dany";
-            case "Problema qualitat": return "qualitat";
-            default: return "altre";
-        }
+        if (tipoUI.equals(getString(R.string.tipus_retard))) return "retard";
+        if (tipoUI.equals(getString(R.string.tipus_error_adreca))) return "error_adreca";
+        if (tipoUI.equals(getString(R.string.tipus_dany))) return "dany";
+        if (tipoUI.equals(getString(R.string.tipus_qualitat))) return "qualitat";
+        return "altre";
     }
 
-    // Creador de adaptadores personalizado para forzar la letra en negro
     private ArrayAdapter<String> crearAdaptadorNegro(String[] datos) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, datos) {
+        return new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, datos) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                ((TextView) view).setTextColor(Color.BLACK); // Forzamos el texto del selector a NEGRO
+                ((TextView) view).setTextColor(Color.BLACK);
                 return view;
             }
         };
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
     }
 }
