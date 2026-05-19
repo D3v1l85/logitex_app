@@ -96,4 +96,9 @@
 
     <string name="title_rutes_assignades">Assigned Routes</string>
     <string name="title_tasques_picking">Picking Tasks</string>
+
+    <string name="title_escaner_ubicacio">Location Scanner</string>
+    <string name="label_introduccio_manual">- Or enter manually -</string>
+    <string name="hint_codi_palet">Pallet code (Ex: SSCC&#8230;)</string>
+    <string name="btn_confirmar_codi">Confirm Code</string>
 </resources>

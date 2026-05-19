@@ -55,8 +55,11 @@ public class LoginActivity extends AppCompatActivity {
 
         LocaleListCompat localesActuales = AppCompatDelegate.getApplicationLocales();
         String idiomaActual = "ca";
-        if (!localesActuales.isEmpty() && localesActuales.get(0) != null) {
-            idiomaActual = localesActuales.get(0).getLanguage();
+        if (!localesActuales.isEmpty()) {
+            java.util.Locale localeObject = localesActuales.get(0);
+            if (localeObject != null) {
+                idiomaActual = localeObject.getLanguage();
+            }
         }
         boolean esIngles = idiomaActual.equals("en");
         btnIdioma.setText(esIngles ? "Switch to CA" : "Switch to EN");
@@ -68,7 +71,13 @@ public class LoginActivity extends AppCompatActivity {
     private void cambiarIdioma() {
         // Miramos qué idioma está puesto ahora
         LocaleListCompat localesActuales = AppCompatDelegate.getApplicationLocales();
-        String idiomaActual = localesActuales.isEmpty() ? "ca" : localesActuales.get(0).getLanguage();
+        String idiomaActual = "ca";
+        if (!localesActuales.isEmpty()) {
+            java.util.Locale localeObject = localesActuales.get(0);
+            if (localeObject != null) {
+                idiomaActual = localeObject.getLanguage();
+            }
+        }
 
         // Elegimos el contrario
         String nuevoIdioma = idiomaActual.equals("en") ? "ca" : "en";
@@ -123,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     String rolTexto = determinarRolTexto(idRol);
                     guardarSesion(token, rolTexto, nombreReal, idRol);
-
-                    Toast.makeText(LoginActivity.this, "Login OK: " + nombreReal, Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("USER_ROLE", rolTexto);

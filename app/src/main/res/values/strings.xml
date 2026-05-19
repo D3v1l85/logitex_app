@@ -99,4 +99,9 @@
     <string name="title_rutes_assignades">Rutes Assignades</string>
     <string name="title_tasques_picking">Tasques de Picking</string>
     <string name="msg_carregant_splash" translatable="false">Carregant LogiTex&#8230;</string>
+
+    <string name="title_escaner_ubicacio">Escàner d\'Ubicació</string>
+    <string name="label_introduccio_manual">- O introdueix manualment -</string>
+    <string name="hint_codi_palet">Codi del palet (Ex: SSCC&#8230;)</string>
+    <string name="btn_confirmar_codi">Confirmar Codi</string>
 </resources>

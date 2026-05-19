@@ -63,6 +63,7 @@ public interface ApiService {
     // ==========================================
 
     // 3. Obtener la lista de incidencias
+    @SuppressWarnings("unused")
     @GET("api/incidencies")
     Call<List<Incidencia>> getIncidencias(
             @Header("Authorization") String token,

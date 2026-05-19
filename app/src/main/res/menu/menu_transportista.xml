@@ -8,4 +8,9 @@
         android:id="@+id/nav_incidencias"
         android:icon="@drawable/ic_alerta"
         android:title="@string/menu_incidencias" />
+    <item
+        android:id="@+id/menu_none"
+        android:title=""
+        android:icon="@android:color/transparent"
+        android:visible="false" />
 </menu>

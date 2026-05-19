@@ -40,50 +40,45 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // 1. Inicializamos las vistas correctamente (he borrado la línea que tenías duplicada aquí)
         bottomNav = findViewById(R.id.bottom_navigation);
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.getMenu().setGroupCheckable(0, false, true);
         tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
         ImageView btnLogout = findViewById(R.id.btnLogout);
 
-        // --- NUEVA LÓGICA DE LOGOUT (Borrar la memoria) ---
+        // --- LÓGICA DE LOGOUT (Borrar la memoria) ---
         btnLogout.setOnClickListener(v -> {
-            // Borramos el token y el rol de las preferencias
             SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
             prefs.edit().clear().apply();
 
-            // Volvemos al Login
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             Toast.makeText(this, getString(R.string.desc_logout), Toast.LENGTH_SHORT).show();
         });
 
-        // 1. Recuperamos los datos de SharedPreferences primero, y si no, del Intent
+        // 2. Recuperamos los datos
         SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         String rol = prefs.getString("ROL_USUARIO", getIntent().getStringExtra("USER_ROLE"));
-        String nombre = getIntent().getStringExtra("USER_NAME"); // Dejamos el nombre por defecto de momento
+        String nombre = getIntent().getStringExtra("USER_NAME");
 
-        // 2. Configuramos el menú según el rol (Ignorando mayúsculas y aceptando mozo/mosso)
-        if (rol != null) {
-            if (rol.equalsIgnoreCase("MOZO") || rol.equalsIgnoreCase("MOSSO")) {
-                configurarMenuMozo();
-            } else if (rol.equalsIgnoreCase("TRANSPORTISTA")) {
-                configurarMenuTransportista();
-            } else {
-                // Por si acaso el rol no es ninguno de los dos
-                Toast.makeText(this, "Rol desconegut: " + rol, Toast.LENGTH_SHORT).show();
-            }
+        // 3. Configuramos el menú según el rol
+        if (rol != null && (rol.equalsIgnoreCase("MOZO") || rol.equalsIgnoreCase("MOSSO"))) {
+            configurarMenuMozo();
+        } else if (rol != null && rol.equalsIgnoreCase("TRANSPORTISTA")) {
+            configurarMenuTransportista();
         } else {
-            Toast.makeText(this, getString(R.string.error_rol), Toast.LENGTH_SHORT).show();
+            // Si el rol es nulo o está corrupto, cerramos sesión por seguridad sin mostrar Toasts raros
+            getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE).edit().clear().apply();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return; // Cortamos la ejecución aquí
         }
 
-        // 3. Cargamos el HomeFragment (Bienvenida) como pantalla fija inicial
+        // 4. Cargamos el HomeFragment (Bienvenida)
         HomeFragment home = new HomeFragment();
         Bundle args = new Bundle();
         args.putString("arg_nombre", nombre);
         home.setArguments(args);
 
-        // Esta será la única carga de fragmento al iniciar la actividad
         cargarFragment(home);
     }
 
@@ -98,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
     private void configurarMenuMozo() {
         tvHeaderTitle.setText(getString(R.string.header_mozo));
         bottomNav.inflateMenu(R.menu.menu_mozo);
+
+        // ¡MAGIA AQUÍ! Tras inflar el menú del mozo, seleccionamos el ítem invisible
+        bottomNav.setSelectedItemId(R.id.menu_none);
 
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -115,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
     private void configurarMenuTransportista() {
         tvHeaderTitle.setText(getString(R.string.header_transportista));
         bottomNav.inflateMenu(R.menu.menu_transportista);
+
+        // ¡MAGIA AQUÍ! Tras inflar el menú del transportista, seleccionamos el ítem invisible
+        bottomNav.setSelectedItemId(R.id.menu_none);
 
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

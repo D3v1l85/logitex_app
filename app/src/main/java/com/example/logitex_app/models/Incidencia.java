@@ -1,7 +1,7 @@
 package com.example.logitex_app.models;
 
 import com.google.gson.annotations.SerializedName;
-
+@SuppressWarnings("unused")
 public class Incidencia {
 
     @SerializedName("id")
@@ -34,4 +34,6 @@ public class Incidencia {
     public int getId() { return id; }
     public String getTitol() { return titol; }
     public String getDescripcio() { return descripcio; }
+    public int getIdOrdre() { return idOrdre; }
+    public int getUserId() { return userId; }
 }
