@@ -5,11 +5,12 @@
     android:orientation="vertical"
     android:background="#F5F5F5">
 
+    <!-- Header -->
     <TextView
-        android:id="@+id/tvPickingHeader"
+        android:id="@+id/tvHistorialHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tasques de Picking"
+        android:text="Historial de Rutes"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#333333"
@@ -17,8 +18,18 @@
         android:background="@android:color/white"
         android:elevation="2dp" />
 
+    <!-- Loading progress bar -->
+    <ProgressBar
+        android:id="@+id/pbHistorialLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:visibility="gone" />
+
+    <!-- Recycler View for history items -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPickingList"
+        android:id="@+id/rvHistorialList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"

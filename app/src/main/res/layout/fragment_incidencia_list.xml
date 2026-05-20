@@ -6,10 +6,10 @@
     android:background="#F5F5F5">
 
     <TextView
-        android:id="@+id/tvPickingHeader"
+        android:id="@+id/tvIncidenciasHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tasques de Picking"
+        android:text="Incidències Assignades"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#333333"
@@ -18,7 +18,7 @@
         android:elevation="2dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPickingList"
+        android:id="@+id/rvIncidenciasList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"

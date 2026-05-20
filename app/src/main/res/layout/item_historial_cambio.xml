@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp">
+
+    <!-- Timeline Indicator: Circle and vertical line -->
+    <LinearLayout
+        android:layout_width="32dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:background="@android:color/holo_blue_dark"
+            android:backgroundTint="#0056b3"
+            android:layout_marginTop="4dp"
+            android:id="@+id/timelineDot" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#CCCCCC"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <!-- Content Box -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@drawable/bg_rounded_white"
+        android:elevation="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp">
+
+        <TextView
+            android:id="@+id/tvEtapa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PENDENT CONFIRMAR"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#0056b3"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tvAutor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Modificat per: Joan Transportista"
+            android:textSize="13sp"
+            android:textColor="#333333"
+            android:layout_marginBottom="2dp"/>
+
+        <TextView
+            android:id="@+id/tvData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data: 2026-05-18 15:30"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tvNotes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notes: Iniciant ruta"
+            android:textSize="13sp"
+            android:textStyle="italic"
+            android:textColor="#D32F2F"
+            android:visibility="gone"/>
+    </LinearLayout>
+</LinearLayout>

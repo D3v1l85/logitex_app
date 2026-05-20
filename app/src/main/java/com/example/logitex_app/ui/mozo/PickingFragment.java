@@ -1,6 +1,7 @@
 package com.example.logitex_app.ui.mozo;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,7 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.logitex_app.R;
 import com.example.logitex_app.api.ApiService;
 import com.example.logitex_app.api.RetrofitClient;
-import com.example.logitex_app.models.Palet;
+import com.example.logitex_app.models.Ordre;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,106 +31,152 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+// Fragment que mostra la llista d'ordres de picking pendents per al mozo de magatzem
 public class PickingFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private PaletAdapter adapter;
-    private List<Palet> listaPalets = new ArrayList<>();
+    private OrdreAdapter adapter;
+    private List<Ordre> listaOrdenes = new ArrayList<>();
 
-    public PickingFragment() { }
+    public PickingFragment() {
+    }
 
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_picking, container, false);
 
+        // Configura la llista visual d'elements
         recyclerView = view.findViewById(R.id.rvPickingList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Conectamos el adaptador con nuestra lista (que al principio estará vacía)
-        adapter = new PaletAdapter(listaPalets);
+        TextView tvHeader = view.findViewById(R.id.tvPickingHeader);
+        if (tvHeader != null) {
+            tvHeader.setText(com.example.logitex_app.utils.TranslationHelper.pickingHeader(getContext()));
+        }
+
+        adapter = new OrdreAdapter(listaOrdenes);
         recyclerView.setAdapter(adapter);
 
-        // Llamamos a la función que descarga los datos de Internet
-        obtenerPaletsDeLaApi();
+        obtenerOrdenesDeLaApi();
 
         return view;
     }
 
-    private void obtenerPaletsDeLaApi() {
-        // 1. Recuperamos el Token de la memoria del móvil
+    // Obté les ordres assignades des del servidor utilitzant la sessio de l'usuari
+    private void obtenerOrdenesDeLaApi() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         String token = prefs.getString("TOKEN_AUTH", "");
+        String nombreLogueado = prefs.getString("USER_NOM", "Usuari");
+        int rolLogueado = prefs.getInt("USER_ROL", 3); // 3 es Mozo
 
+        // Si no hi ha cap token d'autenticacio desat cancel·lem l'operacio
         if (token.isEmpty()) {
-            Toast.makeText(getContext(), "Error: Sessió caducada", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.sessionExpired(getContext()), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 2. Preparamos la llamada
+        // Fem la crida asincrona per obtenir la llista d'ordres del mozo
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<List<Ordre>> call = apiService.getOrdres("Bearer " + token, rolLogueado, nombreLogueado);
 
-        // ⚠️ ATENCIÓN: Por estándar de seguridad, casi todos los servidores requieren
-        // que la palabra "Bearer " vaya delante del token.
-        // Si al probar os da error 401, probad a quitar la palabra "Bearer " y dejar solo el token.
-        Call<List<Palet>> call = apiService.getPales("Bearer " + token);
-
-        // 3. Ejecutamos la llamada en segundo plano
-        call.enqueue(new Callback<List<Palet>>() {
+        call.enqueue(new Callback<List<Ordre>>() {
             @Override
-            public void onResponse(Call<List<Palet>> call, Response<List<Palet>> response) {
+            public void onResponse(Call<List<Ordre>> call, Response<List<Ordre>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // ¡Éxito! Vaciamos la lista vieja y metemos los palets reales
-                    listaPalets.clear();
-                    listaPalets.addAll(response.body());
-                    adapter.notifyDataSetChanged(); // Avisamos a la pantalla de que hay datos nuevos
+                    listaOrdenes.clear();
+                    for (Ordre o : response.body()) {
+                        String estat = o.getEstat();
+                        // Filtrem les ordres mostrant nomes les que estan pendents o en curs de preparacio
+                        if (estat != null && (estat.equalsIgnoreCase("PENDENT_PREPARACIO")
+                                || estat.equalsIgnoreCase("PREPARACIO_EN_CURS"))) {
+                            listaOrdenes.add(o);
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getContext(), "Error al descarregar els palets", Toast.LENGTH_SHORT).show();
-                    Log.e("API_PALES", "Error HTTP: " + response.code());
+                    Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.get(getContext(), "Error al descarregar les ordres", "Error downloading orders"), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Palet>> call, Throwable t) {
-                Toast.makeText(getContext(), "Error de connexió", Toast.LENGTH_SHORT).show();
-                Log.e("API_PALES", "Fallo de red: " + t.getMessage());
+            public void onFailure(Call<List<Ordre>> call, Throwable t) {
+                Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.connectionError(getContext()), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // =======================================================================
-    // NUEVO ADAPTADOR (Preparado para trabajar con objetos Palet)
-    // =======================================================================
-    class PaletAdapter extends RecyclerView.Adapter<PaletAdapter.ViewHolder> {
-        private List<Palet> palets;
+    // Canvia l'estat d'una ordre enviant l'identificador de l'usuari responsable al servidor
+    private void cambiarEstadoOrden(int idOrden, String nouEstat) {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        String token = prefs.getString("TOKEN_AUTH", "");
+        int userId = prefs.getInt("USER_ID", 0);
 
-        public PaletAdapter(List<Palet> palets) {
-            this.palets = palets;
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<JsonObject> call = apiService.cambiarEstadoOrden("Bearer " + token, idOrden, nouEstat, userId);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.get(getContext(), "Estat actualitzat correctament", "Status updated successfully"), Toast.LENGTH_SHORT).show();
+                    obtenerOrdenesDeLaApi(); // Recargar la lista
+                } else {
+                    Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.get(getContext(), "Error al actualitzar l'estat", "Error updating status"), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.connectionError(getContext()), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Adaptador per gestionar i mostrar les dades de cada ordre a la llista
+    class OrdreAdapter extends RecyclerView.Adapter<OrdreAdapter.ViewHolder> {
+        private List<Ordre> ordres;
+
+        public OrdreAdapter(List<Ordre> ordres) {
+            this.ordres = ordres;
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // Reutilizamos el diseño de tarjeta que hiciste el otro día
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_picking, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            Palet palet = palets.get(position);
+            Ordre ordre = ordres.get(position);
 
-            // Rellenamos la tarjeta con los datos reales
-            holder.tvPaletId.setText("Lot: " + palet.getLot());
-            holder.tvUbicacion.setText("Estat: " + palet.getEstat()); // Mostramos el estado temporalmente
+            // Mostra els textos corresponents a l'ordre i el seu estat actual
+            holder.tvPaletId.setText(com.example.logitex_app.utils.TranslationHelper.get(holder.itemView.getContext(), "Ordre: ", "Order: ") + ordre.getIdentificador());
+            holder.tvUbicacion
+                    .setText(com.example.logitex_app.utils.TranslationHelper.destiLabel(holder.itemView.getContext()) + (ordre.getClient() != null ? ordre.getClient() : ordre.getDireccio()));
 
-            // Al hacer clic, vamos al detalle pasando los datos
+            String displayEstat = ordre.getEstat();
+            if ("PENDENT_PREPARACIO".equalsIgnoreCase(displayEstat))
+                displayEstat = com.example.logitex_app.utils.TranslationHelper.get(holder.itemView.getContext(), "Pendent", "Pending");
+            else if ("PREPARACIO_EN_CURS".equalsIgnoreCase(displayEstat))
+                displayEstat = com.example.logitex_app.utils.TranslationHelper.get(holder.itemView.getContext(), "En curs", "In progress");
+
+            holder.tvEstado.setText(displayEstat);
+
+            // Obre el detall de l'ordre de picking en premer sobre un element de la llista
             holder.itemView.setOnClickListener(v -> {
-                DetallePickingFragment detalleFrag = new DetallePickingFragment();
+                DetallPickingFragment detalleFrag = new DetallPickingFragment();
                 Bundle args = new Bundle();
-                args.putString("palet_id", "Lot: " + palet.getLot() + " (ID: " + palet.getId() + ")");
-                args.putString("palet_ub", "Estat actual: " + palet.getEstat());
+                args.putInt("id_orden", ordre.getId());
+                args.putString("orden_nom", ordre.getIdentificador());
+                args.putString("albara_id", ordre.getReferencia());
+                args.putString("albara_dir", ordre.getDireccio());
+                args.putString("albara_estat", ordre.getEstat());
+                args.putString("tenda_destinataria", ordre.getClient());
                 detalleFrag.setArguments(args);
 
                 requireActivity().getSupportFragmentManager()
@@ -141,16 +189,17 @@ public class PickingFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return palets.size();
+            return ordres.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvPaletId, tvUbicacion;
+            TextView tvPaletId, tvUbicacion, tvEstado;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvPaletId = itemView.findViewById(R.id.tvPaletId);
                 tvUbicacion = itemView.findViewById(R.id.tvUbicacion);
+                tvEstado = itemView.findViewById(R.id.tvEstado);
             }
         }
     }
