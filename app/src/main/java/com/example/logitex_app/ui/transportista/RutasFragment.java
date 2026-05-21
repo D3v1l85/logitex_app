@@ -44,20 +44,15 @@ public class RutasFragment extends Fragment {
                 if (result.getContents() != null) {
                     actualizarEstadoRapido(idOrdenParaEscanerRapido);
                 }
-            });
+            }
+    );
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rutas, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.rvRutasList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        TextView tvHeader = view.findViewById(R.id.tvRutasHeader);
-        if (tvHeader != null) {
-            tvHeader.setText(com.example.logitex_app.utils.TranslationHelper.routesHeader(getContext()));
-        }
 
         adapter = new RutasAdapter(listaOrdenes);
         recyclerView.setAdapter(adapter);
@@ -70,9 +65,12 @@ public class RutasFragment extends Fragment {
         SharedPreferences prefs = requireActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         String token = prefs.getString("TOKEN_AUTH", "");
 
-        // Recuperem les dades de l'usuari real
+        // Recuperamos los datos del usuario real (dinámico)
         String nombreLogueado = prefs.getString("USER_NOM", "Usuari");
         int rolLogueado = prefs.getInt("USER_ROL", 4);
+
+        // ¡EL CHIVATO! Fíjate en qué nombre aparece aquí cuando entres
+        Toast.makeText(getContext(), "🔍 Cercant rutes de: '" + nombreLogueado + "'", Toast.LENGTH_LONG).show();
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<List<Ordre>> call = apiService.getOrdres("Bearer " + token, rolLogueado, nombreLogueado);
@@ -82,30 +80,18 @@ public class RutasFragment extends Fragment {
             public void onResponse(Call<List<Ordre>> call, Response<List<Ordre>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listaOrdenes.clear();
-
-                    // Filtrem la llista per mostrar únicament les ordres que estan llestes per
-                    // repartir o ja en trànsit
-                    for (Ordre o : response.body()) {
-                        String estat = o.getEstat();
-                        if (estat != null && (estat.equalsIgnoreCase("PREPARACIO_FINALITZADA")
-                                || estat.equalsIgnoreCase("PENDENT_CONFIRMAR")
-                                || estat.equalsIgnoreCase("EN_TRANSIT")
-                                || estat.equalsIgnoreCase("EN RUTA"))) {
-                            listaOrdenes.add(o);
-                        }
-                    }
+                    listaOrdenes.addAll(response.body());
                     adapter.notifyDataSetChanged();
 
                     if (listaOrdenes.isEmpty()) {
-                        Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.get(getContext(), "No hi ha rutes actives preparades o en curs", "No active routes prepared or in progress"), Toast.LENGTH_SHORT)
-                                .show();
+                        Toast.makeText(getContext(), "La API ha retornat 0 rutes", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<List<Ordre>> call, Throwable t) {
-                Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.connectionError(getContext()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error de connexió", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -113,34 +99,30 @@ public class RutasFragment extends Fragment {
     private void actualizarEstadoRapido(String idOrden) {
         SharedPreferences prefs = requireActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         String token = prefs.getString("TOKEN_AUTH", "");
-        int userId = prefs.getInt("USER_ID", 0);
         int idLimpio = Integer.parseInt(idOrden.replaceAll("[^0-9]", ""));
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<JsonObject> call = apiService.cambiarEstadoOrden("Bearer " + token, idLimpio, "EN_TRANSIT", userId);
+        Call<JsonObject> call = apiService.cambiarEstadoOrden("Bearer " + token, idLimpio, "EN RUTA");
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.get(getContext(), "Ruta en marxa!", "Route started!"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Ruta en marxa!", Toast.LENGTH_SHORT).show();
                     obtenerOrdenesDelServidor();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(getContext(), com.example.logitex_app.utils.TranslationHelper.serverError(getContext()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error al servidor", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private class RutasAdapter extends RecyclerView.Adapter<RutasAdapter.ViewHolder> {
         private List<Ordre> dades;
-
-        public RutasAdapter(List<Ordre> dades) {
-            this.dades = dades;
-        }
+        public RutasAdapter(List<Ordre> dades) { this.dades = dades; }
 
         @NonNull
         @Override
@@ -152,25 +134,25 @@ public class RutasFragment extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Ordre ordre = dades.get(position);
 
-            // Mostrem l'identificador de la ruta en comptes de l'albara
+            // Mostramos el nombre de la orden (identificador) en lugar del albarán
             holder.tvRutaId.setText(ordre.getIdentificador());
-            holder.tvDestino.setText(com.example.logitex_app.utils.TranslationHelper.destiLabel(holder.itemView.getContext()) + ordre.getDireccio());
+            holder.tvDestino.setText("Destí: " + ordre.getDireccio());
 
             holder.btnScan.setOnClickListener(v -> {
                 idOrdenParaEscanerRapido = String.valueOf(ordre.getId());
                 ScanOptions options = new ScanOptions();
-                // El prompt de l'escaner pot continuar indicant la referencia d'albara
-                options.setPrompt(com.example.logitex_app.utils.TranslationHelper.get(holder.itemView.getContext(), "Escaneja per l'albarà: ", "Scan for delivery note: ") + ordre.getReferencia());
+                // El prompt puede seguir mencionando el albarán si el QR físico lo usa
+                options.setPrompt("Escaneja per l'albarà: " + ordre.getReferencia());
                 options.setOrientationLocked(false);
                 barcodeLauncher.launch(options);
             });
 
             holder.itemView.setOnClickListener(v -> {
-                DetallRutaFragment detalleFrag = new DetallRutaFragment();
+                DetalleRutaFragment detalleFrag = new DetalleRutaFragment();
                 Bundle args = new Bundle();
                 args.putInt("id_orden", ordre.getId());
-                args.putString("orden_nom", ordre.getIdentificador());
-                args.putString("albara_id", ordre.getReferencia());
+                args.putString("orden_nom", ordre.getIdentificador()); // Pasamos el nombre
+                args.putString("albara_id", ordre.getReferencia());   // Pasamos el albarán
                 args.putString("albara_dir", ordre.getDireccio());
                 args.putString("albara_estat", ordre.getEstat());
                 detalleFrag.setArguments(args);
@@ -184,14 +166,11 @@ public class RutasFragment extends Fragment {
         }
 
         @Override
-        public int getItemCount() {
-            return dades.size();
-        }
+        public int getItemCount() { return dades.size(); }
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvRutaId, tvDestino;
             ImageButton btnScan;
-
             ViewHolder(View itemView) {
                 super(itemView);
                 tvRutaId = itemView.findViewById(R.id.tvRutaId);

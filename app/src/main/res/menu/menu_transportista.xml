@@ -5,19 +5,7 @@
         android:icon="@drawable/ic_camio"
         android:title="@string/menu_rutas" />
     <item
-        android:id="@+id/nav_qr"
-        android:icon="@drawable/ic_camara"
-        android:title="@string/menu_escaner" />
-    <item
         android:id="@+id/nav_incidencias"
         android:icon="@drawable/ic_alerta"
         android:title="@string/menu_incidencias" />
-    <item
-        android:id="@+id/nav_historial"
-        android:icon="@drawable/ic_llista"
-        android:title="@string/menu_historial" />
-    <item
-        android:id="@+id/nav_perfil"
-        android:icon="@drawable/ic_perfil"
-        android:title="@string/menu_perfil" />
 </menu>

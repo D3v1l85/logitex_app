@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
@@ -18,8 +18,7 @@
             android:id="@+id/tvIdOrdre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ORD-001"
-            android:textStyle="bold"
+            tools:text="ORD-001" android:textStyle="bold"
             android:textColor="@color/logitex_blue"
             android:textSize="18sp" />
 
@@ -27,15 +26,13 @@
             android:id="@+id/tvEstat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pendent de preparació"
-            android:textColor="@color/status_pending" />
+            tools:text="Pendent de preparació" android:textColor="@color/status_pending" />
 
         <TextView
             android:id="@+id/tvAdreca"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Carrer de la Logística, 45"
-            android:layout_marginTop="4dp" />
+            tools:text="Carrer de la Logística, 45" android:layout_marginTop="4dp" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

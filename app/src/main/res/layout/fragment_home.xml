@@ -28,6 +28,6 @@
         android:layout_height="200dp"
         android:layout_marginTop="40dp"
         android:src="@drawable/logo_transparent"
-        android:alpha="0.2" />
+        android:contentDescription="@string/desc_logo" android:alpha="0.2" />
 
 </LinearLayout>

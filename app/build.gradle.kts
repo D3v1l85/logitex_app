@@ -47,4 +47,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

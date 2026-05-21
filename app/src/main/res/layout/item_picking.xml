@@ -2,12 +2,16 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:strokeColor="#E0E0E0"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +24,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@android:drawable/ic_menu_agenda"
-            app:tint="#0056b3" />
+            app:tint="@color/logitex_blue"
+            android:contentDescription="@string/menu_picking"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -33,26 +38,27 @@
                 android:id="@+id/tvPaletId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Palet: #10203"
+                tools:text="Palet: #10203"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#333333" />
+                android:textColor="#111111" />
 
             <TextView
                 android:id="@+id/tvUbicacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Passadís 4 - Estanteria B"
+                tools:text="Passadís 4 - Estanteria B"
                 android:textSize="14sp"
-                android:textColor="#666666" />
+                android:textColor="#444444" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tvEstado"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PENDENT"
+            tools:text="PENDENT"
             android:textStyle="bold"
-            android:textColor="#FFA500" />
+            android:textColor="#FFA500"
+            android:visibility="gone" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

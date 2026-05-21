@@ -101,19 +101,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <!-- BOTÓ DE INCIDÈNCIA -->
-    <Button
-        android:id="@+id/btnAbrirIncidenciaPicking"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:text="NOTIFICAR INCIDÈNCIA"
-        android:backgroundTint="#d32f2f"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="8dp"
-        android:layout_marginBottom="8dp"/>
-
     <!-- BOTÓ D'ACCIÓ PRINCIPAL -->
     <Button
         android:id="@+id/btnEscanearPalet"

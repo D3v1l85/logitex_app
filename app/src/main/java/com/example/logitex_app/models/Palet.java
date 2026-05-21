@@ -1,7 +1,7 @@
 package com.example.logitex_app.models;
 
 import com.google.gson.annotations.SerializedName;
-
+@SuppressWarnings("unused")
 public class Palet {
 
     @SerializedName("id")

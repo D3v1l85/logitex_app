@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Incidencia {
 
-    @SerializedName("id_incidencia")
+    @SerializedName("id")
     private int id;
 
-    @SerializedName("titol")
+    @SerializedName("titol") // O el campo "tipo" según vuestra API
     private String titol;
 
     @SerializedName("descripcio")
@@ -19,57 +19,19 @@ public class Incidencia {
     @SerializedName("userId")
     private int userId;
 
-    @SerializedName("estat")
-    private String estat;
-
-    @SerializedName("prioritat")
-    private String prioritat;
-
-    @SerializedName("reportatPerNom")
-    private String reportatPerNom;
-
-    @SerializedName("assignatANom")
-    private String assignatANom;
-
+    // Constructor vacío necesario para GSON
     public Incidencia() {}
 
-    public int getId() { 
-        return id; 
-    }
-    
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitol() { 
-        return titol; 
+    // Constructor para crear incidencias nuevas
+    public Incidencia(String titol, String descripcio, int idOrdre, int userId) {
+        this.titol = titol;
+        this.descripcio = descripcio;
+        this.idOrdre = idOrdre;
+        this.userId = userId;
     }
 
-    public String getDescripcio() { 
-        return descripcio; 
-    }
-
-    public int getIdOrdre() {
-        return idOrdre;
-    }
-
-    public String getEstat() {
-        return estat;
-    }
-
-    public void setEstat(String estat) {
-        this.estat = estat;
-    }
-
-    public String getPrioritat() {
-        return prioritat;
-    }
-
-    public String getReportatPerNom() {
-        return reportatPerNom;
-    }
-
-    public String getAssignatANom() {
-        return assignatANom;
-    }
+    // Getters
+    public int getId() { return id; }
+    public String getTitol() { return titol; }
+    public String getDescripcio() { return descripcio; }
 }

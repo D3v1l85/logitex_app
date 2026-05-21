@@ -9,7 +9,7 @@
         android:id="@+id/tvPickingHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tasques de Picking"
+        android:text="@string/title_tasques_picking"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#333333"
@@ -17,12 +17,19 @@
         android:background="@android:color/white"
         android:elevation="2dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPickingList"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshPicking"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPickingList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

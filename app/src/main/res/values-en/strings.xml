@@ -1,30 +1,21 @@
 <resources>
     <string name="app_name">Logitex_app</string>
-    <string name="li_has_donat">You have given</string>
     <string name="sumar">Add</string>
     <string name="cero">0</string>
     <string name="panell_control">Control Panel</string>
     <string name="carregant_modul">Loading module&#8230;</string>
     <string name="lector_qr">QR Reader / Locate Pallet</string>
     <string name="llista_picking">Picking List</string>
-    <string name="les_meves_rutes">My Routes and Notes</string>
-    <string name="reportar_incidencia">Report Incident</string>
     <string name="header_mozo">LogiTex - Warehouse</string>
     <string name="header_transportista">LogiTex - Transport</string>
     <string name="cargando_modulos">Loading module&#8230;</string>
-    <string name="msg_picking">Picking Screen (Pallet collection list)</string>
     <string name="msg_escaner">Camera open: Scanning barcode/QR&#8230;</string>
     <string name="msg_rutas">Routes Screen (Delivery status)</string>
-    <string name="msg_incidencias">Incident Form (Delay, accident, etc.)</string>
     <string name="error_rol">Error: User role not identified</string>
     <string name="menu_picking">Picking</string>
     <string name="menu_escaner">Scanner</string>
     <string name="menu_rutas">Routes</string>
-    <string name="menu_incidencias">Incidents</string>
-    <string name="desc_logout">Successfully logged out</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome_msg">Hello, welcome!</string>
-    <string name="menu_historial">History</string>
     <string name="default_user">User</string>
-    <string name="menu_perfil">Profile</string>
 </resources>

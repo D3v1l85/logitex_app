@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F4F6">
+    android:fitsSystemWindows="true" android:background="#F3F4F6">
 
     <View
         android:id="@+id/topBackground"
@@ -13,15 +13,39 @@
         android:background="@color/logitex_blue"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/logoApp"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCambiarIdioma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_idioma_placeholder"
+        android:textColor="@color/logitex_blue"
+        android:backgroundTint="@android:color/white"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        app:cornerRadius="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/logoCard"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="40dp"
-        android:src="@drawable/logo_logitex"
+        app:cardCornerRadius="60dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/logoApp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo_logitex"
+            android:contentDescription="@string/desc_logo"
+            android:scaleType="centerCrop" />
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -42,7 +66,7 @@
                 android:id="@+id/tvWelcomeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Benvingut"
+                android:text="@string/title_benvingut"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/logitex_blue"
@@ -54,10 +78,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Usuari"
+                android:hint="@string/hint_usuari"
                 android:layout_marginBottom="16dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etUser"
+                    android:inputType="textEmailAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -67,7 +92,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Contrasenya"
+                android:hint="@string/hint_contrasenya"
                 app:passwordToggleEnabled="true"
                 android:layout_marginBottom="24dp">
                 <com.google.android.material.textfield.TextInputEditText
@@ -81,13 +106,12 @@
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="INICIAR SESSIÓ"
+                android:text="@string/btn_iniciar_sessio"
                 android:backgroundTint="@color/logitex_blue"
                 app:cornerRadius="8dp" />
 
         </LinearLayout>
 
-        <!-- Ruedita de carga oculta por defecto -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
