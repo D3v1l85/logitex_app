@@ -1,6 +1,5 @@
 package com.example.logitex_app.ui.transportista;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.logitex_app.R;
 import com.example.logitex_app.api.ApiService;
@@ -37,9 +35,8 @@ import retrofit2.Response;
 public class RutasFragment extends Fragment {
 
     private String idOrdenParaEscanerRapido = "";
-    private final List<Ordre> listaOrdenes = new ArrayList<>();
+    private List<Ordre> listaOrdenes = new ArrayList<>();
     private RutasAdapter adapter;
-    private SwipeRefreshLayout swipeRefresh;
 
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(
             new ScanContract(),
@@ -54,48 +51,47 @@ public class RutasFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rutas, container, false);
-
         RecyclerView recyclerView = view.findViewById(R.id.rvRutasList);
-        swipeRefresh = view.findViewById(R.id.swipeRefreshRutas);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new RutasAdapter(listaOrdenes);
         recyclerView.setAdapter(adapter);
 
-        swipeRefresh.setOnRefreshListener(this::obtenerOrdenesDelServidor);
-
-        swipeRefresh.setRefreshing(true);
         obtenerOrdenesDelServidor();
-
         return view;
     }
 
     private void obtenerOrdenesDelServidor() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         String token = prefs.getString("TOKEN_AUTH", "");
+
+        // Recuperamos los datos del usuario real (dinámico)
         String nombreLogueado = prefs.getString("USER_NOM", "Usuari");
         int rolLogueado = prefs.getInt("USER_ROL", 4);
+
+        // ¡EL CHIVATO! Fíjate en qué nombre aparece aquí cuando entres
+        Toast.makeText(getContext(), "🔍 Cercant rutes de: '" + nombreLogueado + "'", Toast.LENGTH_LONG).show();
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<List<Ordre>> call = apiService.getOrdres("Bearer " + token, rolLogueado, nombreLogueado);
 
-        call.enqueue(new Callback<>() {
-            @SuppressLint("NotifyDataSetChanged")
+        call.enqueue(new Callback<List<Ordre>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Ordre>> call, @NonNull Response<List<Ordre>> response) {
-                swipeRefresh.setRefreshing(false);
+            public void onResponse(Call<List<Ordre>> call, Response<List<Ordre>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listaOrdenes.clear();
                     listaOrdenes.addAll(response.body());
                     adapter.notifyDataSetChanged();
+
+                    if (listaOrdenes.isEmpty()) {
+                        Toast.makeText(getContext(), "La API ha retornat 0 rutes", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Ordre>> call, @NonNull Throwable t) {
-                swipeRefresh.setRefreshing(false);
-                Toast.makeText(getContext(), getString(R.string.err_connexio), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<Ordre>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de connexió", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -106,27 +102,26 @@ public class RutasFragment extends Fragment {
         int idLimpio = Integer.parseInt(idOrden.replaceAll("[^0-9]", ""));
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<JsonObject> call = apiService.cambiarEstadoOrden("Bearer " + token, idLimpio, "EN_TRANSIT");
+        Call<JsonObject> call = apiService.cambiarEstadoOrden("Bearer " + token, idLimpio, "EN RUTA");
 
-        call.enqueue(new Callback<>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), getString(R.string.toast_ruta_iniciada), Toast.LENGTH_SHORT).show();
-                    swipeRefresh.setRefreshing(true);
+                    Toast.makeText(getContext(), "Ruta en marxa!", Toast.LENGTH_SHORT).show();
                     obtenerOrdenesDelServidor();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), getString(R.string.err_connexio), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(getContext(), "Error al servidor", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private class RutasAdapter extends RecyclerView.Adapter<RutasAdapter.ViewHolder> {
-        private final List<Ordre> dades;
+        private List<Ordre> dades;
         public RutasAdapter(List<Ordre> dades) { this.dades = dades; }
 
         @NonNull
@@ -139,22 +134,15 @@ public class RutasFragment extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Ordre ordre = dades.get(position);
 
+            // Mostramos el nombre de la orden (identificador) en lugar del albarán
             holder.tvRutaId.setText(ordre.getIdentificador());
-
-            if (ordre.getEstat().equalsIgnoreCase("ENTREGAT")) {
-                holder.btnScan.setVisibility(View.GONE);
-                holder.tvDestino.setTextColor(android.graphics.Color.parseColor("#4CAF50"));
-                holder.tvDestino.setText(getString(R.string.format_estat_finalitzada, ordre.getDireccio()));
-            } else {
-                holder.btnScan.setVisibility(View.VISIBLE);
-                holder.tvDestino.setTextColor(android.graphics.Color.parseColor("#444444"));
-                holder.tvDestino.setText(getString(R.string.format_desti, ordre.getDireccio()));
-            }
+            holder.tvDestino.setText("Destí: " + ordre.getDireccio());
 
             holder.btnScan.setOnClickListener(v -> {
                 idOrdenParaEscanerRapido = String.valueOf(ordre.getId());
                 ScanOptions options = new ScanOptions();
-                options.setPrompt(getString(R.string.prompt_escaneja_albara, ordre.getReferencia()));
+                // El prompt puede seguir mencionando el albarán si el QR físico lo usa
+                options.setPrompt("Escaneja per l'albarà: " + ordre.getReferencia());
                 options.setOrientationLocked(false);
                 barcodeLauncher.launch(options);
             });
@@ -163,8 +151,8 @@ public class RutasFragment extends Fragment {
                 DetalleRutaFragment detalleFrag = new DetalleRutaFragment();
                 Bundle args = new Bundle();
                 args.putInt("id_orden", ordre.getId());
-                args.putString("orden_nom", ordre.getIdentificador());
-                args.putString("albara_id", ordre.getReferencia());
+                args.putString("orden_nom", ordre.getIdentificador()); // Pasamos el nombre
+                args.putString("albara_id", ordre.getReferencia());   // Pasamos el albarán
                 args.putString("albara_dir", ordre.getDireccio());
                 args.putString("albara_estat", ordre.getEstat());
                 detalleFrag.setArguments(args);

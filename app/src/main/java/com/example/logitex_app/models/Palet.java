@@ -16,7 +16,7 @@ public class Palet {
     @SerializedName("estat")
     private String estat;
 
-    // Getters para poder leer los datos luego
+    // Getters per poder llegir les dades
     public int getId() {
         return id;
     }

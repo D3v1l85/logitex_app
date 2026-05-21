@@ -11,7 +11,7 @@ import com.example.logitex_app.R;
 public class HomeFragment extends Fragment {
 
     public HomeFragment() {
-        // Constructor vacío requerido
+        // Constructor buit requerit
     }
 
     @Override
@@ -21,7 +21,7 @@ public class HomeFragment extends Fragment {
 
         TextView tvNombre = view.findViewById(R.id.tvNombreUsuario);
 
-        // Recuperamos el nombre que pasaremos desde el MainActivity
+        // Recuperem el nom que es passa des de MainActivity
         if (getArguments() != null) {
             String nombre = getArguments().getString("arg_nombre");
             tvNombre.setText(nombre);

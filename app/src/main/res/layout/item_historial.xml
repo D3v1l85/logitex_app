@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E0E0E0">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Icon Indicator -->
+        <ImageView
+            android:id="@+id/ivHistorialIcon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_camio"
+            app:tint="#2196F3"
+            android:contentDescription="Estat ruta" />
+
+        <!-- Order Information -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp">
+
+            <TextView
+                android:id="@+id/tvHistorialId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ordre: ORD-001"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#333333" />
+
+            <TextView
+                android:id="@+id/tvHistorialDestino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Destí: C/ Pelai 58, BCN"
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Status Badge -->
+        <TextView
+            android:id="@+id/tvHistorialEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ENTREGAT"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_rounded_white"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:elevation="1dp" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,104 +1,21 @@
 <resources>
     <string name="app_name">Logitex_app</string>
-    <string name="li_has_donat">You clicked</string>
     <string name="sumar">Add</string>
     <string name="cero">0</string>
     <string name="panell_control">Control Panel</string>
     <string name="carregant_modul">Loading module&#8230;</string>
     <string name="lector_qr">QR Reader / Locate Pallet</string>
     <string name="llista_picking">Picking List</string>
-    <string name="les_meves_rutes">My Routes &amp; Delivery Notes</string>
-    <string name="reportar_incidencia">Report Issue</string>
     <string name="header_mozo">LogiTex - Warehouse</string>
     <string name="header_transportista">LogiTex - Transport</string>
     <string name="cargando_modulos">Loading module&#8230;</string>
-    <string name="msg_picking">Picking Screen (List of pallets to collect)</string>
     <string name="msg_escaner">Camera open: Scanning barcode/QR&#8230;</string>
     <string name="msg_rutas">Routes Screen (Delivery status)</string>
-    <string name="msg_incidencias">Issue Form (Delay, accident, etc.)</string>
     <string name="error_rol">Error: User role not identified</string>
     <string name="menu_picking">Picking</string>
     <string name="menu_escaner">Scanner</string>
     <string name="menu_rutas">Routes</string>
-    <string name="menu_incidencias">Issues</string>
-    <string name="desc_logout">Session successfully closed</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome_msg">Hello, welcome!</string>
     <string name="default_user">User</string>
-
-    <string name="label_selecciona_ordre">Select affected Order</string>
-    <string name="label_tipus_incidencia">Issue type</string>
-    <string name="label_descripcio">Detailed description</string>
-    <string name="hint_descripcio">Explain exactly what happened&#8230;</string>
-    <string name="btn_enviar_report">SEND REPORT TO HQ</string>
-    <string name="opcio_selecciona_ordre">Select an order&#8230;</string>
-    <string name="opcio_selecciona_tipus">Select a type&#8230;</string>
-    <string name="tipus_retard">Delivery delay</string>
-    <string name="tipus_error_adreca">Address error</string>
-    <string name="tipus_dany">Damaged goods</string>
-    <string name="tipus_qualitat">Quality problem</string>
-    <string name="tipus_altres">Other</string>
-    <string name="err_selecciona_ordre">Please select the affected order</string>
-    <string name="err_selecciona_tipus">Please select the issue type</string>
-    <string name="err_descripcio_buida">The description is required</string>
-    <string name="msg_incidencia_ok">Issue successfully submitted</string>
-    <string name="err_sessio">Error: User not detected</string>
-
-    <string name="hint_codi_manual">- Or enter code manually -</string>
-    <string name="hint_ex_codi">Ex: 12345</string>
-    <string name="btn_confirmar_manual">CONFIRM MANUAL CODE</string>
-    <string name="btn_rebre_mercaderia">RECEIVE GOODS (Camera)</string>
-    <string name="btn_confirmar_lliurament">CONFIRM DELIVERY (Camera)</string>
-    <string name="msg_escaneig_cancel">Scan cancelled</string>
-    <string name="msg_introdueix_codi">Enter the code first</string>
-    <string name="prompt_rebre">Frame the QR code to RECEIVE</string>
-    <string name="prompt_lliurar">Frame the QR code to DELIVER</string>
-    <string name="err_servidor">Server error: %1$d</string>
-    <string name="err_connexio">Connection error</string>
-    <string name="toast_ruta_iniciada">Route started!</string>
-    <string name="toast_cap_ruta">No assigned routes for %1$s</string>
-    <string name="prompt_escaneja_albara">Scan delivery note: %1$s</string>
-
-    <string name="format_ordre">Order: %1$s</string>
-    <string name="format_albara_direccio">Waybill: %1$s\nAddress: %2$s</string>
-    <string name="format_estat">Status: %1$s</string>
-    <string name="format_desti">Destination: %1$s</string>
-    <string name="format_estat_finalitzada">COMPLETED: %1$s</string>
-    <string name="format_ordre_actualitzada">Order updated to %1$s</string>
-    <string name="format_cercant_rutes">Searching routes for: \'%1$s\'</string>
-    <string name="format_lot">Batch: %1$s</string>
-    <string name="format_lot_id">Batch: %1$s (ID: %2$s)</string>
-    <string name="format_estat_actual">Current status: %1$s</string>
-    <string name="format_estat_actualitzat">Status successfully updated to %1$s</string>
-    <string name="format_codi_llegit">Code read: %1$s</string>
-    <string name="format_error_connexio_detall">Connection error: %1$s</string>
-
-    <string name="err_sessio_caducada">Error: Session expired</string>
-    <string name="err_descarregar_palets">Error downloading pallets</string>
-    <string name="msg_permis_camera">Camera permission is required to scan</string>
-    <string name="err_codi_qr_invalid">Error: Invalid QR code</string>
-    <string name="title_ubicacio_magatzem">Warehouse Location</string>
-    <string name="title_dades_palet">Pallet Data</string>
-    <string name="btn_escananejar_recollir">SCAN AND COLLECT</string>
-    <string name="val_desconeguda">Unknown</string>
-    <string name="pes_aproximat">Approximate weight: 250 kg</string>
-
-    <string name="btn_idioma_placeholder">EN / CA</string>
-    <string name="desc_logo">LogiTex Logo</string>
-    <string name="title_benvingut">Welcome</string>
-    <string name="hint_usuari">Email</string>
-    <string name="hint_contrasenya">Password</string>
-    <string name="btn_iniciar_sessio">LOG IN</string>
-
-    <string name="label_mozo_responsable">Responsible warehouse worker</string>
-    <string name="opcio_selecciona_mozo">Select a warehouse worker&#8230;</string>
-    <string name="err_selecciona_mozo">Please select the responsible worker</string>
-
-    <string name="title_rutes_assignades">Assigned Routes</string>
-    <string name="title_tasques_picking">Picking Tasks</string>
-
-    <string name="title_escaner_ubicacio">Location Scanner</string>
-    <string name="label_introduccio_manual">- Or enter manually -</string>
-    <string name="hint_codi_palet">Pallet code (Ex: SSCC&#8230;)</string>
-    <string name="btn_confirmar_codi">Confirm Code</string>
 </resources>

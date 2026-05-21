@@ -26,19 +26,24 @@ public class DetallePickingFragment extends Fragment {
         TextView tvUbicacion = view.findViewById(R.id.tvDetalleUbicacion);
         Button btnEscanear = view.findViewById(R.id.btnEscanearPalet);
 
+        // 1. Recollir les dades del palet seleccionat
         if (getArguments() != null) {
             String paletId = getArguments().getString("palet_id", "#00000");
-            String ubicacion = getArguments().getString("palet_ub", getString(R.string.val_desconeguda));
+            String ubicacion = getArguments().getString("palet_ub", "Desconeguda");
 
             tvPalet.setText(paletId);
             tvUbicacion.setText(ubicacion);
         }
 
-        btnEscanear.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, new UbicacionFragment())
-                .addToBackStack(null)
-                .commit());
+        // 2. Lògica del botó Escàner
+        btnEscanear.setOnClickListener(v -> {
+            // Anem al fragment de l'escàner per confirmar que hem agafat el palet
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new UbicacionFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
     }

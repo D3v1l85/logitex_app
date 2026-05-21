@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.logitex_app.MainActivity;
@@ -27,9 +26,6 @@ import org.json.JSONObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.os.LocaleListCompat;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -50,42 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         if (progressBar != null) progressBar.setVisibility(View.GONE);
 
         btnLogin.setOnClickListener(v -> realizarLoginReal());
-        // 1. Configurar el botón de idioma
-        Button btnIdioma = findViewById(R.id.btnCambiarIdioma);
-
-        LocaleListCompat localesActuales = AppCompatDelegate.getApplicationLocales();
-        String idiomaActual = "ca";
-        if (!localesActuales.isEmpty()) {
-            java.util.Locale localeObject = localesActuales.get(0);
-            if (localeObject != null) {
-                idiomaActual = localeObject.getLanguage();
-            }
-        }
-        boolean esIngles = idiomaActual.equals("en");
-        btnIdioma.setText(esIngles ? "Switch to CA" : "Switch to EN");
-
-        // Al hacer clic, cambiamos el idioma
-        btnIdioma.setOnClickListener(v -> cambiarIdioma());
-    }
-
-    private void cambiarIdioma() {
-        // Miramos qué idioma está puesto ahora
-        LocaleListCompat localesActuales = AppCompatDelegate.getApplicationLocales();
-        String idiomaActual = "ca";
-        if (!localesActuales.isEmpty()) {
-            java.util.Locale localeObject = localesActuales.get(0);
-            if (localeObject != null) {
-                idiomaActual = localeObject.getLanguage();
-            }
-        }
-
-        // Elegimos el contrario
-        String nuevoIdioma = idiomaActual.equals("en") ? "ca" : "en";
-
-        // ¡ESTA ES LA LÍNEA MÁGICA!
-        // Cambia el idioma de toda la app y la reinicia automáticamente
-        LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(nuevoIdioma);
-        AppCompatDelegate.setApplicationLocales(appLocale);
     }
 
     private void realizarLoginReal() {
@@ -107,9 +67,9 @@ public class LoginActivity extends AppCompatActivity {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<LoginResponse> call = apiService.loginUser(jsonLogin);
 
-        call.enqueue(new Callback<>() {
+        call.enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
                 btnLogin.setEnabled(true);
 
@@ -133,6 +93,8 @@ public class LoginActivity extends AppCompatActivity {
                     String rolTexto = determinarRolTexto(idRol);
                     guardarSesion(token, rolTexto, nombreReal, idRol);
 
+                    Toast.makeText(LoginActivity.this, "Login OK: " + nombreReal, Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("USER_ROLE", rolTexto);
                     startActivity(intent);
@@ -144,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
                 btnLogin.setEnabled(true);
                 Toast.makeText(LoginActivity.this, "Error de connexió al servidor", Toast.LENGTH_LONG).show();
@@ -187,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
 
             return valorPorDefecto;
         } catch (Exception e) {
-            Log.e("LoginActivity", "Error a processar les dades", e);
+            e.printStackTrace();
             return valorPorDefecto;
         }
     }

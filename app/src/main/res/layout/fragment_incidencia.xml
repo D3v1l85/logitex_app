@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvIncidentsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reportar Incidència"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/tvSelectOrderLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selecciona l'Ordre afectada"
+            android:textColor="#666666"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerRutas"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:elevation="1dp"
+            android:layout_marginBottom="16dp"
+            android:spinnerMode="dropdown"/>
+
+        <TextView
+            android:id="@+id/tvIncidentTypeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tipus d'incidència"
+            android:textColor="#666666"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerTipoIncidencia"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:elevation="1dp"
+            android:layout_marginBottom="16dp"
+            android:spinnerMode="dropdown"/>
+
+        <TextView
+            android:id="@+id/tvPriorityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prioritat de la incidència"
+            android:textColor="#666666"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerPrioritat"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:elevation="1dp"
+            android:layout_marginBottom="16dp"
+            android:spinnerMode="dropdown"/>
+
+        <TextView
+            android:id="@+id/tvMozoGroupLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Grup de Mozos Responsable"
+            android:textColor="#666666"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerGrupMozos"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:elevation="1dp"
+            android:layout_marginBottom="16dp"
+            android:spinnerMode="dropdown"/>
+
+        <TextView
+            android:id="@+id/tvDescriptionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Descripció detallada"
+            android:textColor="#666666"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Explica què ha passat exactament..."
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:elevation="1dp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnEnviarIncidencia"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="ENVIAR REPORT A CENTRAL"
+            android:backgroundTint="#F44336"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+</ScrollView>

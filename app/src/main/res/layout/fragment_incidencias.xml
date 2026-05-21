@@ -9,19 +9,19 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/reportar_incidencia"
+        android:text="Reportar Incidència"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#333333"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="24dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_selecciona_ordre"
+        android:text="Selecciona l'Ordre afectada"
         android:textColor="#666666"
         android:textStyle="bold"
-        android:layout_marginBottom="6dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <Spinner
         android:id="@+id/spinnerRutas"
@@ -29,33 +29,16 @@
         android:layout_height="50dp"
         android:background="@android:color/white"
         android:elevation="1dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="16dp"
         android:spinnerMode="dropdown"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_mozo_responsable"
+        android:text="Tipus d'incidència"
         android:textColor="#666666"
         android:textStyle="bold"
-        android:layout_marginBottom="6dp"/>
-
-    <Spinner
-        android:id="@+id/spinnerMozos"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@android:color/white"
-        android:elevation="1dp"
-        android:layout_marginBottom="14dp"
-        android:spinnerMode="dropdown"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_tipus_incidencia"
-        android:textColor="#666666"
-        android:textStyle="bold"
-        android:layout_marginBottom="6dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <Spinner
         android:id="@+id/spinnerTipoIncidencia"
@@ -63,35 +46,37 @@
         android:layout_height="50dp"
         android:background="@android:color/white"
         android:elevation="1dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="16dp"
         android:spinnerMode="dropdown"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_descripcio"
+        android:text="Descripció detallada"
         android:textColor="#666666"
         android:textStyle="bold"
-        android:layout_marginBottom="6dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <EditText
         android:id="@+id/etDescripcion"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="@string/hint_descripcio"
-        android:importantForAutofill="no"
+        android:layout_height="120dp"
+        android:hint="Explica què ha passat exactament..."
         android:background="@android:color/white"
         android:padding="12dp"
         android:gravity="top|start"
         android:inputType="textMultiLine"
-        android:textColor="#000000" /> <Button
-    android:id="@+id/btnEnviarIncidencia"
-    android:layout_width="match_parent"
-    android:layout_height="55dp"
-    android:layout_marginTop="16dp"
-    android:text="@string/btn_enviar_report"
-    android:backgroundTint="#F44336"
-    android:textColor="@android:color/white"
-    android:textSize="16sp"
-    android:textStyle="bold"/>
+        android:elevation="1dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnEnviarIncidencia"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="ENVIAR REPORT A CENTRAL"
+        android:backgroundTint="#F44336"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
 </LinearLayout>
